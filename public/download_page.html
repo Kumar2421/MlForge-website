@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>ML Forge IDE - Industrial Download Hub</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+  <link href="https://fonts.googleapis.com" rel="preconnect" />
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;family=Manrope:wght@400;500;700;800&amp;family=Space+Mono:wght@400;700&amp;display=swap"
+    rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: "#66FF99",
+            "primary-hover": "#52E085",
+            "background-dark": "#0B0B0B",
+            "surface-dark": "#141414",
+            "accent-yellow": "#FFFF33",
+            "text-dark": "#E5E5E5",
+            "subtle-dark": "#1A1A1A",
+          },
+          fontFamily: {
+            sans: ["Inter", "sans-serif"],
+            display: ["Manrope", "sans-serif"],
+            mono: ["Space Mono", "monospace"],
+          },
+        },
+      },
+    };
+  </script>
+  <style type="text/tailwindcss">
+    .glass-card {
+            background: rgba(20, 20, 20, 0.4);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .text-glow {
+            text-shadow: 0 0 10px rgba(102, 255, 153, 0.5);
+        }
+        .dashboard-grid {
+            background-size: 40px 40px;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        }
+        @keyframes drawPath {
+            0% { stroke-dashoffset: 1000; }
+            100% { stroke-dashoffset: 0; }
+        }
+        .animate-path {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: drawPath 5s linear forwards;
+        }
+        .os-tab-active {
+            @apply text-primary border-b-2 border-primary;
+        }
+    </style>
+</head>
+
+<body class="bg-background-dark text-text-dark font-sans selection:bg-primary selection:text-black">
+  <!-- Navigation -->
+  <nav class="sticky top-0 z-50 w-full bg-background-dark/90 backdrop-blur-md border-b border-gray-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-20 items-center">
+        <div class="flex items-center">
+          <span class="flex items-center gap-2 text-2xl font-black tracking-tighter text-white uppercase italic">
+            <span class="material-symbols-outlined text-primary scale-125">token</span>
+            ML Forge
+          </span>
+        </div>
+        <div class="flex items-center space-x-8">
+          <a class="text-xs font-black uppercase tracking-widest text-gray-400 hover:text-white transition-colors"
+            href="landing_page.html">Home</a>
+          <a class="text-xs font-black uppercase tracking-widest text-gray-400 hover:text-white transition-colors"
+            href="agentic_page.html">Protocols</a>
+          <a class="text-xs font-black uppercase tracking-widest text-gray-400 hover:text-white transition-colors"
+            href="vector_db_page.html">Documentation</a>
+          <a class="text-xs font-black uppercase tracking-widest text-primary border-b-2 border-primary"
+            href="download_page.html">Download</a>
+          <a class="inline-flex items-center px-6 py-2.5 text-xs font-black uppercase tracking-widest rounded-sm text-black bg-primary hover:bg-primary-hover transition-all"
+            href="contact_page.html">
+            Contact
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Download Hero -->
+  <header class="relative pt-32 pb-40 overflow-hidden border-b border-white/5">
+    <div class="absolute inset-0 opacity-10 dashboard-grid"></div>
+    <div class="max-w-5xl mx-auto px-4 relative z-10 text-center">
+      <div
+        class="inline-flex items-center gap-2 px-3 py-1 rounded bg-primary/10 border border-primary/20 text-primary text-[10px] font-black uppercase tracking-widest mb-8">
+        Industrial Distribution // Build 1.2.4
+      </div>
+      <h1 class="text-6xl md:text-9xl font-black text-white leading-[0.8] tracking-tighter uppercase italic mb-8">
+        The Local <br /><span class="text-primary text-glow">Workstation.</span>
+      </h1>
+      <p class="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto leading-relaxed font-medium">
+        Experience the power of a dedicated ML IDE. Native silicon bindings,
+        zero cloud latency, and full data sovereignty.
+      </p>
+    </div>
+  </header>
+
+  <!-- Download Control Center -->
+  <section class="py-32 bg-subtle-dark">
+    <div class="max-w-4xl mx-auto px-4">
+
+      <div class="flex justify-center flex-wrap gap-12 mb-20 border-b border-white/5">
+        <button onclick="switchOS('windows')" id="tab-windows"
+          class="os-tab-active flex items-center gap-2 pb-6 text-sm font-black uppercase tracking-widest transition-all">
+          <span class="material-symbols-outlined">desktop_windows</span> Windows
+        </button>
+        <button onclick="switchOS('macos')" id="tab-macos"
+          class="flex items-center gap-2 pb-6 text-sm font-black uppercase tracking-widest text-gray-500 hover:text-white transition-all">
+          <span class="material-symbols-outlined">desktop_mac</span> macOS
+        </button>
+        <button onclick="switchOS('linux')" id="tab-linux"
+          class="flex items-center gap-2 pb-6 text-sm font-black uppercase tracking-widest text-gray-500 hover:text-white transition-all">
+          <span class="material-symbols-outlined">terminal</span> Linux
+        </button>
+      </div>
+
+      <!-- Download Cards -->
+      <div id="windows-content" class="download-section">
+        <div class="glass-card p-12 relative overflow-hidden">
+          <div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent"></div>
+          <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-12">
+            <div>
+              <div class="flex items-center gap-4 mb-4">
+                <h2 class="text-4xl font-black text-white italic uppercase tracking-tighter">Windows 10/11</h2>
+                <span class="bg-primary/20 text-primary text-[10px] font-black px-2 py-1 rounded">PRO VERIFIED</span>
+              </div>
+              <p class="text-gray-500 text-sm max-w-sm">DirectX 12 support, NVIDIA CUDA optimized, and local storage
+                orchestration engine.</p>
+            </div>
+            <button onclick="startDownload('Windows')"
+              class="group relative px-12 py-6 bg-primary text-black font-black uppercase tracking-widest rounded-sm hover:scale-105 transition-all text-sm flex items-center gap-3">
+              <span class="material-symbols-outlined font-black">download</span> Get .exe Installer
+              <div class="absolute -bottom-1 left-0 w-0 h-1 bg-white transition-all group-active:w-full"></div>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div id="macos-content" class="download-section hidden">
+        <div class="glass-card p-12 relative overflow-hidden">
+          <div class="absolute inset-0 bg-gradient-to-br from-accent-yellow/5 to-transparent"></div>
+          <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-12">
+            <div>
+              <div class="flex items-center gap-4 mb-4">
+                <h2 class="text-4xl font-black text-white italic uppercase tracking-tighter">macOS Sonoma+</h2>
+                <span class="bg-accent-yellow/20 text-accent-yellow text-[10px] font-black px-2 py-1 rounded">SILICON
+                  NATIVE</span>
+              </div>
+              <p class="text-gray-500 text-sm max-w-sm">Metal API integration, Apple Silicon (M1/M2/M3) optimized, and
+                Universal CoreML runtime.</p>
+            </div>
+            <button onclick="startDownload('macOS')"
+              class="group relative px-12 py-6 bg-accent-yellow text-black font-black uppercase tracking-widest rounded-sm hover:scale-105 transition-all text-sm flex items-center gap-3">
+              <span class="material-symbols-outlined font-black">download</span> Get .dmg Bundle
+              <div class="absolute -bottom-1 left-0 w-0 h-1 bg-white transition-all group-active:w-full"></div>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div id="linux-content" class="download-section hidden">
+        <div class="glass-card p-12 relative overflow-hidden">
+          <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent"></div>
+          <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-12">
+            <div>
+              <div class="flex items-center gap-4 mb-4">
+                <h2 class="text-4xl font-black text-white italic uppercase tracking-tighter">Ubuntu / Debian</h2>
+                <span class="bg-white/10 text-white text-[10px] font-black px-2 py-1 rounded">STABLE 22.04 LTS</span>
+              </div>
+              <p class="text-gray-500 text-sm max-w-sm">Command-line bindings, Docker orchestration support, and raw
+                CUDA/TensorRT kernel access.</p>
+            </div>
+            <button onclick="startDownload('Linux')"
+              class="group relative px-12 py-6 bg-white text-black font-black uppercase tracking-widest rounded-sm hover:scale-105 transition-all text-sm flex items-center gap-3">
+              <span class="material-symbols-outlined font-black">download</span> Get .AppImage
+              <div class="absolute -bottom-1 left-0 w-0 h-1 bg-primary transition-all group-active:w-full"></div>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Requirements Hub -->
+      <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="p-8 border border-white/5 rounded-sm bg-background-dark">
+          <h4 class="text-primary font-black uppercase text-xs mb-6 flex items-center gap-2">
+            <span class="material-symbols-outlined text-sm">memory</span> Minimum Compute
+          </h4>
+          <div class="space-y-4">
+            <div class="flex justify-between border-b border-white/5 pb-2">
+              <span class="text-[10px] text-gray-500 uppercase">Processor</span>
+              <span class="text-[10px] text-white">8-Core Modern CPU</span>
+            </div>
+            <div class="flex justify-between border-b border-white/5 pb-2">
+              <span class="text-[10px] text-gray-500 uppercase">Memory</span>
+              <span class="text-[10px] text-white">16GB Unified / RAM</span>
+            </div>
+            <div class="flex justify-between border-b border-white/5 pb-2">
+              <span class="text-[10px] text-gray-500 uppercase">GPU</span>
+              <span class="text-[10px] text-white">DirectX 12 / Metal Compatible</span>
+            </div>
+          </div>
+        </div>
+        <div class="p-8 border border-white/5 rounded-sm bg-background-dark">
+          <h4 class="text-accent-yellow font-black uppercase text-xs mb-6 flex items-center gap-2">
+            <span class="material-symbols-outlined text-sm">database</span> Storage Req
+          </h4>
+          <div class="space-y-4">
+            <div class="flex justify-between border-b border-white/5 pb-2">
+              <span class="text-[10px] text-gray-500 uppercase">Engine Core</span>
+              <span class="text-[10px] text-white">2.5 GB</span>
+            </div>
+            <div class="flex justify-between border-b border-white/5 pb-2">
+              <span class="text-[10px] text-gray-500 uppercase">Zoo Cache</span>
+              <span class="text-[10px] text-white">15 GB Recommended</span>
+            </div>
+            <div class="flex justify-between border-b border-white/5 pb-2">
+              <span class="text-[10px] text-gray-500 uppercase">Swap Space</span>
+              <span class="text-[10px] text-white">SSD (NVMe Required)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Local Hub (Charts) -->
+  <section class="py-40 bg-background-dark relative overflow-hidden">
+    <div class="absolute inset-0 dashboard-grid opacity-20"></div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
+        <div class="order-2 lg:order-1 glass-card p-1 rounded-sm">
+          <div class="bg-surface-dark p-8">
+            <div class="flex justify-between items-center mb-12">
+              <div class="text-[10px] font-mono text-gray-500 uppercase tracking-widest">Inference_Latency_Profile.log
+              </div>
+              <div class="flex gap-4">
+                <span class="text-primary text-[8px] font-black uppercase tracking-widest">Local-Kernel</span>
+              </div>
+            </div>
+
+            <!-- Latency Chart SVG -->
+            <div class="h-64 w-full relative">
+              <svg class="w-full h-full overflow-visible" viewBox="0 0 400 200">
+                <defs>
+                  <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#66FF99" stop-opacity="0.2" />
+                    <stop offset="100%" stop-color="#66FF99" stop-opacity="0" />
+                  </linearGradient>
+                </defs>
+                <path
+                  d="M0,180 L20,175 L40,178 L60,150 L80,155 L100,145 L120,135 L140,138 L160,122 L180,125 L200,100 L220,105 L240,95 L260,98 L280,80 L300,82 L320,70 L340,72 L360,65 L380,68 L400,60"
+                  fill="none" stroke="#66FF99" stroke-width="2" class="animate-path" />
+                <path
+                  d="M0,180 L20,175 L40,178 L60,150 L80,155 L100,145 L120,135 L140,138 L160,122 L180,125 L200,100 L220,105 L240,95 L260,98 L280,80 L300,82 L320,70 L340,72 L360,65 L380,68 L400,60 L400,200 L0,200 Z"
+                  fill="url(#chartGradient)" opacity="0.5" />
+              </svg>
+            </div>
+
+            <div class="mt-8 flex justify-between items-center">
+              <div>
+                <h5 class="text-white font-black text-2xl italic">0.14ms</h5>
+                <p class="text-[9px] text-gray-500 uppercase">Avg Local Spike</p>
+              </div>
+              <div class="text-right">
+                <h5 class="text-accent-yellow font-black text-2xl italic">4.2GB/s</h5>
+                <p class="text-[9px] text-gray-500 uppercase">IO Throughput</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="order-1 lg:order-2">
+          <span class="text-primary text-[10px] font-black uppercase tracking-[0.4em] mb-4 text-glow">Silicon
+            Direct</span>
+          <h2 class="text-4xl md:text-7xl font-black text-white leading-[0.9] tracking-tighter uppercase italic mb-8">
+            Bypass the <br /><span class="text-accent-yellow">Network Tax.</span>
+          </h2>
+          <p class="text-lg text-gray-400 font-medium leading-relaxed mb-10">
+            Stop uploading datasets and wait for cloud inference. ML Forge interfaces directly with local drivers
+            (CUDA/Metal) to provide instant feedback and 10x faster training epochs.
+          </p>
+          <div class="code-block font-mono text-[10px] bg-black/40 p-6 rounded border border-white/5 text-gray-500">
+            <ctrl42> set_execution_target(DEVICE_PRIMARY_SILICON)<br />
+              target.bind_kernel(TENSOR_CORE_V4)<br />
+              status: BINDING_SUCCESSFUL [Latency: 0.12ms]
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-20 bg-background-dark border-t border-white/5">
+    <div class="max-w-7xl mx-auto px-4 text-center">
+      <div
+        class="flex items-center justify-center gap-2 text-xl font-black tracking-tighter text-white uppercase italic mb-8">
+        <span class="material-symbols-outlined text-primary scale-125">token</span>
+        ML Forge
+      </div>
+      <p class="text-[10px] text-gray-600 uppercase font-black tracking-[0.3em]">
+        Local-First Always // &copy; 2026 ml forge ide.
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    function switchOS(os) {
+      // Hide all sections
+      document.querySelectorAll('.download-section').forEach(s => s.classList.add('hidden'));
+      // Remove active style from tabs
+      document.querySelectorAll('button[id^="tab-"]').forEach(t => t.classList.remove('os-tab-active', 'text-primary', 'border-primary'));
+      document.querySelectorAll('button[id^="tab-"]').forEach(t => t.classList.add('text-gray-500'));
+
+      // Show selected section
+      document.getElementById(os + '-content').classList.remove('hidden');
+      // Add active style to selected tab
+      const activeTab = document.getElementById('tab-' + os);
+      activeTab.classList.add('os-tab-active');
+      activeTab.classList.remove('text-gray-500');
+    }
+
+    function startDownload(platform) {
+      const btn = event.currentTarget;
+      const originalText = btn.innerHTML;
+      btn.innerHTML = `<span class="material-symbols-outlined animate-spin">sync</span> Initializing...`;
+      btn.disabled = true;
+
+      setTimeout(() => {
+        btn.innerHTML = `<span class="material-symbols-outlined">verified</span> Started ${platform} Build`;
+        btn.classList.add('bg-white', 'text-black');
+
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+          btn.disabled = false;
+          btn.classList.remove('bg-white', 'text-black');
+          alert(`In a real environment, the ${platform} installer would start downloading now.`);
+        }, 3000);
+      }, 1000);
+    }
+  </script>
+</body>
+
+</html>

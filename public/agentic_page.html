@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>ml forge - Core Engine & Infrastructure</title>
+    <meta
+        content="Deep dive into the ml forge core engine: deterministic training, local orchestration, and edge-ready exports."
+        name="description" />
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Space+Mono:wght@400;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#66FF99",
+                        "primary-hover": "#52E085",
+                        "background-dark": "#0B0B0B",
+                        "surface-dark": "#141414",
+                        "accent-yellow": "#FFFF33",
+                        "text-dark": "#E5E5E5",
+                        "subtle-dark": "#1A1A1A",
+                        accent: "#66FF99",
+                        "text-gray": "#A3A3A3",
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Manrope', 'sans-serif'],
+                        mono: ['Space Mono', 'monospace'],
+                    },
+                    borderRadius: {
+                        DEFAULT: "4px",
+                    },
+                },
+            },
+        };
+    </script>
+    <style type="text/tailwindcss">
+        .glass-card {
+            background: rgba(20, 20, 20, 0.4);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .text-glow {
+            text-shadow: 0 0 10px rgba(102, 255, 153, 0.5);
+        }
+        .dashboard-grid {
+            background-size: 40px 40px;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        }
+        @keyframes slideInUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .animate-slide-up {
+            animation: slideInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+        .technical-label {
+            font-size: 9px;
+            color: #71717a;
+            font-family: 'Space Mono', monospace;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 0.25rem;
+            display: block;
+        }
+        .boundary-tag {
+            padding: 0.125rem 0.5rem;
+            border-radius: 0.125rem;
+            font-size: 8px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            border: 1px solid rgba(102, 255, 153, 0.4);
+            background: rgba(102, 255, 153, 0.1);
+            color: #66FF99;
+        }
+        @keyframes chart-scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .realtime-chart-path {
+            animation: chart-scroll 20s linear infinite;
+        }
+        @keyframes drawPath {
+            to { stroke-dashoffset: 0; }
+        }
+        .sparkline-green {
+            stroke: #66FF99;
+            stroke-width: 2;
+            fill: none;
+            filter: drop-shadow(0 0 4px rgba(102, 255, 153, 0.4));
+            stroke-dasharray: 200;
+            stroke-dashoffset: 200;
+            animation: drawPath 3s ease-out forwards;
+        }
+    </style>
+</head>
+
+<body class="font-sans antialiased text-white bg-background-light dark:bg-background-dark">
+    <nav class="sticky top-0 z-50 w-full bg-background-dark/90 backdrop-blur-md border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <div class="flex items-center">
+                    <span
+                        class="flex items-center gap-2 text-2xl font-black tracking-tighter text-white uppercase italic">
+                        <span class="material-symbols-outlined text-primary scale-125">token</span>
+                        ML Forge
+                    </span>
+                </div>
+                <div class="flex items-center space-x-8">
+                    <a class="text-xs font-black uppercase tracking-widest text-gray-400 hover:text-white transition-colors"
+                        href="landing_page.html">Home</a>
+                    <a class="text-xs font-black uppercase tracking-widest text-primary border-b-2 border-primary"
+                        href="agentic_page.html">Protocols</a>
+                    <a class="text-xs font-black uppercase tracking-widest text-gray-400 hover:text-white transition-colors"
+                        href="vector_db_page.html">Documentation</a>
+                    <a class="text-xs font-black uppercase tracking-widest text-gray-400 hover:text-white transition-colors"
+                        href="download_page.html">Download</a>
+                    <a class="inline-flex items-center px-6 py-2.5 text-xs font-black uppercase tracking-widest rounded-sm text-black bg-primary hover:bg-primary-hover transition-all"
+                        href="contact_page.html">
+                        Contact
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <header class="relative pt-32 pb-40 overflow-hidden border-b border-white/5 bg-background-dark">
+        <div class="absolute inset-0 opacity-10 dashboard-grid"></div>
+        <div class="max-w-5xl mx-auto px-4 relative z-10 text-center">
+            <div
+                class="inline-flex items-center gap-2 px-3 py-1 rounded bg-primary/10 border border-primary/20 text-primary text-[10px] font-black uppercase tracking-widest mb-8">
+                Core Engine Specification // v4.2
+            </div>
+            <h1
+                class="text-6xl md:text-9xl font-black text-white leading-[0.8] tracking-tighter uppercase italic mb-8 animate-slide-up">
+                Deterministic <br /> <span class="text-primary text-glow">Protocols.</span>
+            </h1>
+            <p class="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto leading-relaxed font-medium animate-slide-up"
+                style="animation-delay: 0.2s;">
+                Master the execution architecture of ML Forge IDE. Leverage high-performance vision kernels with
+                explicit
+                hardware-native integrity and zero-latency local orchestration.
+            </p>
+        </div>
+    </header>
+    <section class="bg-background-dark py-32 relative overflow-hidden">
+        <div class="absolute inset-0 dashboard-grid opacity-10 pointer-events-none"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="mb-20">
+                <span class="technical-label">Architecture Layer</span>
+                <h2 class="text-4xl md:text-6xl font-black text-white italic tracking-tighter uppercase">
+                    The Integrity <span class="text-primary">Kernel.</span>
+                </h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Deterministic Workflows -->
+                <div class="glass-card p-10 relative group hover:border-primary/40 overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 font-mono text-[9px] text-gray-700">CORE-01</div>
+                    <span
+                        class="material-symbols-outlined text-primary mb-6 text-3xl transition-transform group-hover:scale-110">hub</span>
+                    <h3 class="text-white font-black uppercase italic tracking-tighter mb-4">Deterministic Workflows
+                    </h3>
+                    <p class="text-[12px] text-gray-400 leading-relaxed mb-6">
+                        Ensure 100% reproducibility across your vision pipeline. Every run is tied to a specific data
+                        hash and configuration snapshot.
+                    </p>
+                    <div class="boundary-tag bg-primary/10 border-primary/40 text-primary">Repeatable</div>
+                </div>
+
+                <!-- Edge-Native Deployment -->
+                <div class="glass-card p-10 relative group hover:border-primary/40 overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 font-mono text-[9px] text-gray-700">CORE-02</div>
+                    <span
+                        class="material-symbols-outlined text-primary mb-6 text-3xl transition-transform group-hover:scale-110">rocket_launch</span>
+                    <h3 class="text-white font-black uppercase italic tracking-tighter mb-4">Edge-Native Deployment</h3>
+                    <p class="text-[12px] text-gray-400 leading-relaxed mb-6">
+                        Export production-ready artifacts for ONNX, TensorRT, and CoreML. Optimized for local hardware
+                        and air-gapped environments.
+                    </p>
+                    <div class="boundary-tag bg-primary/10 border-primary/40 text-primary">Optimized</div>
+                </div>
+
+                <!-- Local Data Ownership -->
+                <div class="glass-card p-10 relative group hover:border-primary/40 overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 font-mono text-[9px] text-gray-700">CORE-03</div>
+                    <span
+                        class="material-symbols-outlined text-primary mb-6 text-3xl transition-transform group-hover:scale-110">security</span>
+                    <h3 class="text-white font-black uppercase italic tracking-tighter mb-4">Local Ownership</h3>
+                    <p class="text-[12px] text-gray-400 leading-relaxed mb-6">
+                        Your data never leaves your machine. Full system responsibility without silent cloud sync or
+                        hidden data sharing.
+                    </p>
+                    <div class="boundary-tag bg-primary/10 border-primary/40 text-primary">Sovereign</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="bg-background-dark text-white py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row gap-12">
+            <div class="lg:w-1/4 flex-shrink-0">
+                <div class="sticky top-24 space-y-1">
+                    <a class="block px-4 py-3 rounded text-text-gray hover:text-white hover:bg-card-dark transition-colors"
+                        href="#suite">
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-sm">category</span>
+                            <span class="text-sm">Annotation & Dataset Tools</span>
+                        </div>
+                    </a>
+                    <a class="block px-4 py-3 rounded text-text-gray hover:text-white hover:bg-card-dark transition-colors"
+                        href="#components">
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-sm">extension</span>
+                            <span class="text-sm">Model Training Engine</span>
+                        </div>
+                    </a>
+                    <a class="block px-4 py-3 rounded text-text-gray hover:text-white hover:bg-card-dark transition-colors"
+                        href="#deployment">
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-sm">settings_input_component</span>
+                            <span class="text-sm">Edge Export & Deployment</span>
+                        </div>
+                    </a>
+                    <a class="block px-4 py-3 rounded bg-card-dark text-white border-l-4 border-accent font-medium transition-all"
+                        href="#gen-ai">
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-accent text-sm">psychology</span>
+                            <span class="text-sm">Vision Model Zoo</span>
+                        </div>
+                    </a>
+                    <a class="block px-4 py-3 rounded text-text-gray hover:text-white hover:bg-card-dark transition-colors"
+                        href="#governance">
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-sm">visibility</span>
+                            <span class="text-sm">Deterministic Integrity</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div class="lg:w-3/4 space-y-24">
+                <div class="scroll-mt-24" id="suite">
+                    <div class="flex items-center gap-4 mb-8">
+                        <div class="w-10 h-10 bg-accent rounded flex items-center justify-center text-black">
+                            <span class="material-symbols-outlined">category</span>
+                        </div>
+                        <h2 class="text-2xl font-bold tracking-tight">Suite of development tools</h2>
+                    </div>
+                    <hr class="border-border-dark mb-8" />
+                    <h3 class="text-lg font-semibold mb-6">AI tool calling. <span
+                            class="text-text-gray font-normal">Call AI tools and components without friction.</span>
+                    </h3>
+                    <div class="bg-card-dark border border-border-dark rounded-lg p-2 mb-12 shadow-2xl overflow-hidden">
+                        <div class="flex flex-col md:flex-row h-[400px]">
+                            <div class="w-full md:w-1/2 border-r border-border-dark p-4 space-y-4 bg-[#1e1e1e]">
+                                <div
+                                    class="flex items-center justify-between bg-[#2d2d2d] p-3 rounded text-xs border border-border-dark">
+                                    <div class="flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-sm">storage</span>
+                                        <span>Get data warehouse tables</span>
+                                    </div>
+                                    <span class="px-2 py-0.5 bg-gray-700 rounded text-[10px]">Tool</span>
+                                </div>
+                                <p class="text-[10px] text-gray-500 pl-2">Search for tables on the data warehouse using
+                                    multiple search strategies and return ranked results.</p>
+                                <div
+                                    class="flex items-center justify-between bg-[#2d2d2d] p-3 rounded text-xs border border-border-dark opacity-60">
+                                    <div class="flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-sm text-yellow-500">warning</span>
+                                        <span>Outsourcing export</span>
+                                    </div>
+                                    <span class="px-2 py-0.5 bg-gray-700 rounded text-[10px]">Action</span>
+                                </div>
+                                <div
+                                    class="bg-[#0A0A0A] border border-border-dark rounded-lg overflow-hidden font-mono text-xs shadow-2xl relative group">
+                                    <div class="code-header">
+                                        <div class="dot dot-red"></div>
+                                        <div class="dot dot-yellow"></div>
+                                        <div class="dot dot-green"></div>
+                                        <span
+                                            class="text-[10px] text-gray-400 ml-4 font-sans">forge_kernel_bind.py</span>
+                                    </div>
+                                    <div class="p-6">
+                                        <div class="flex items-start gap-4">
+                                            <div class="text-gray-600 select-none text-right w-4">
+                                                1<br />2<br />3<br />4<br />5<br />6
+                                            </div>
+                                            <div>
+                                                <span class="text-purple-400">import</span> forge.kernel <span
+                                                    class="text-purple-400">as</span> fk<br />
+                                                <span class="text-purple-400">from</span> forge.tools <span
+                                                    class="text-purple-400">import</span> ComponentMapper<br /><br />
+                                                <span class="text-gray-500"># Map AI tools to local compute
+                                                    threads</span><br />
+                                                fk.<span class="text-blue-300">bind_components</span>(<span
+                                                    class="text-green-400">"forge_kernel_v4"</span>, threads=<span
+                                                    class="text-yellow-500">12</span>)<br />
+                                                mapper = <span class="text-blue-300">ComponentMapper</span>(strict=<span
+                                                    class="text-yellow-500">True</span>)
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tech-stamp">KRN-AUTO_EXEC</div>
+                                </div>
+                                <div
+                                    class="flex items-center justify-between bg-[#2d2d2d] p-3 rounded text-xs border border-border-dark">
+                                    <div class="flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-sm text-green-500">image</span>
+                                        <span>Compare images</span>
+                                    </div>
+                                    <span class="px-2 py-0.5 bg-gray-700 rounded text-[10px]">Tool</span>
+                                </div>
+                            </div>
+                            <div class="w-full md:w-1/2 bg-[#121212] p-4 font-mono text-xs overflow-y-auto">
+                                <span class="text-purple-400">def</span> <span
+                                    class="text-yellow-200">get_data_warehouse_tables</span>(search_term: <span
+                                    class="text-blue-300">str</span>) -&gt; Markdown: <br />
+                                <span class="text-gray-500 ml-4">"""</span><br />
+                                <span class="text-gray-500 ml-4">Search for tables on the data warehouse</span><br />
+                                <span class="text-gray-500 ml-4">using multiple search strategies and</span><br />
+                                <span class="text-gray-500 ml-4">return ranked results.</span><br />
+                                <span class="text-gray-500 ml-4">...</span><br />
+                                <span class="text-gray-500 ml-4">"""</span><br />
+                                <br />
+                                <span class="text-blue-300 ml-4">search_engine</span> = TableSearch()<br />
+                                <span class="text-blue-300 ml-4">results</span> =
+                                search_engine.search(search_term)<br />
+                                <span class="text-purple-400 ml-4">return</span> Markdown(results.to_markdown())
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+                        <div class="glass-card p-10 relative group hover:border-primary/40">
+                            <span class="technical-label">Insights Layer</span>
+                            <h4 class="font-black text-white uppercase italic tracking-tighter mb-4 text-xl">Data-Native
+                                Retrieval</h4>
+                            <p class="text-[11px] text-gray-500 leading-relaxed">
+                                Empower data-driven teams to quickly gather the exact insight they need about company
+                                tabular data, and documents.
+                            </p>
+                            <div class="boundary-tag bg-primary/10 border-primary/40 text-primary mt-6">Intelligent
+                            </div>
+                        </div>
+                        <div class="glass-card p-10 relative group hover:border-primary/40">
+                            <span class="technical-label">Content Layer</span>
+                            <h4 class="font-black text-white uppercase italic tracking-tighter mb-4 text-xl">
+                                Personalized Synthesis</h4>
+                            <p class="text-[11px] text-gray-500 leading-relaxed">
+                                Scale business operations by rapidly creating content based on customer data and
+                                predictions.
+                            </p>
+                            <div class="boundary-tag bg-primary/10 border-primary/40 text-primary mt-6">Automated</div>
+                        </div>
+                        <div class="glass-card p-10 relative group hover:border-primary/40">
+                            <span class="technical-label">Explainability Layer</span>
+                            <h4 class="font-black text-white uppercase italic tracking-tighter mb-4 text-xl">Predictive
+                                Clarity</h4>
+                            <p class="text-[11px] text-gray-500 leading-relaxed">
+                                Make better understanding of predictive analytics by augmenting time series forecasts
+                                with summaries and explications.
+                            </p>
+                            <div class="boundary-tag bg-primary/10 border-primary/40 text-primary mt-6">Transparent
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="scroll-mt-24" id="components">
+                    <div class="flex items-center gap-4 mb-8">
+                        <div class="w-10 h-10 bg-accent rounded flex items-center justify-center text-black">
+                            <span class="material-symbols-outlined">extension</span>
+                        </div>
+                        <h2 class="text-2xl font-bold tracking-tight">High-Performance Forge Modules</h2>
+                    </div>
+                    <hr class="border-border-dark mb-8" />
+                    <h3 class="text-lg font-semibold mb-6">Tools Gallery. <span
+                            class="text-text-gray font-normal">Natively access a production-ready library of pre-built
+                            AI tool components.</span></h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-[32px] mb-16">
+                        <div class="glass-card p-10 relative group hover:border-primary/40">
+                            <div class="absolute top-0 right-0 p-4 font-mono text-[9px] text-gray-700">MOD-VAL</div>
+                            <span
+                                class="material-symbols-outlined text-primary mb-6 text-3xl group-hover:animate-float transition-all">analytics</span>
+                            <h4 class="text-white font-black uppercase italic tracking-tighter mb-4">Model Evaluator
+                            </h4>
+                            <p class="text-[11px] text-gray-500 leading-relaxed">Systematically assess model performance
+                                across diverse datasets and edge cases.</p>
+                        </div>
+                        <div class="glass-card p-10 relative group hover:border-primary/40">
+                            <div class="absolute top-0 right-0 p-4 font-mono text-[9px] text-gray-700">D-ANON</div>
+                            <span
+                                class="material-symbols-outlined text-primary mb-6 text-3xl group-hover:animate-float transition-all">privacy_tip</span>
+                            <h4 class="text-white font-black uppercase italic tracking-tighter mb-4">Data Anonymizer
+                            </h4>
+                            <p class="text-[11px] text-gray-500 leading-relaxed">Automatically scrub PII and sensitive
+                                information from data streams.</p>
+                        </div>
+                        <div class="glass-card p-10 relative group hover:border-primary/40">
+                            <div class="absolute top-0 right-0 p-4 font-mono text-[9px] text-gray-700">V-OPTIM</div>
+                            <span
+                                class="material-symbols-outlined text-primary mb-6 text-3xl group-hover:animate-float transition-all">memory</span>
+                            <h4 class="text-white font-black uppercase italic tracking-tighter mb-4">Edge Optimizer</h4>
+                            <p class="text-[11px] text-gray-500 leading-relaxed">Pruning and quantization layers for
+                                hardware-specific optimizations.</p>
+                        </div>
+                        <div
+                            class="bg-[#000000] p-6 rounded border border-border-dark hover:border-accent/30 hover:bg-white/[0.02] glow-hover transition-all group">
+                            <span
+                                class="material-symbols-outlined text-yellow-400 mb-4 group-hover:scale-110 transition-transform">schema</span>
+                            <h4 class="font-bold text-white mb-2">Schema Mapper</h4>
+                            <p class="text-[12px] leading-relaxed text-text-gray">Dynamically align unstructured data
+                                with enterprise database schemas.</p>
+                        </div>
+                        <div
+                            class="bg-[#000000] p-6 rounded border border-border-dark hover:border-accent/30 hover:bg-white/[0.02] glow-hover transition-all group">
+                            <span
+                                class="material-symbols-outlined text-yellow-400 mb-4 group-hover:scale-110 transition-transform">translate</span>
+                            <h4 class="font-bold text-white mb-2">Language Detector</h4>
+                            <p class="text-[12px] leading-relaxed text-text-gray">Identify and route multi-lingual
+                                inputs to optimized localized LLMs.</p>
+                        </div>
+                        <div
+                            class="bg-[#000000] p-6 rounded border border-border-dark hover:border-accent/30 hover:bg-white/[0.02] glow-hover transition-all group">
+                            <span
+                                class="material-symbols-outlined text-yellow-400 mb-4 group-hover:scale-110 transition-transform">history_edu</span>
+                            <h4 class="font-bold text-white mb-2">Audit Logger</h4>
+                            <p class="text-[12px] leading-relaxed text-text-gray">Capture high-fidelity traces of all
+                                protocol node operations for compliance.</p>
+                        </div>
+                        <div
+                            class="bg-[#000000] p-6 rounded border border-border-dark hover:border-accent/30 hover:bg-white/[0.02] glow-hover transition-all group">
+                            <span
+                                class="material-symbols-outlined text-yellow-400 mb-4 group-hover:scale-110 transition-transform">dynamic_form</span>
+                            <h4 class="font-bold text-white mb-2">Input Validator</h4>
+                            <p class="text-[12px] leading-relaxed text-text-gray">Verify input types and ranges before
+                                processing to prevent system errors.</p>
+                        </div>
+                        <div
+                            class="bg-[#000000] p-6 rounded border border-border-dark hover:border-accent/30 hover:bg-white/[0.02] glow-hover transition-all group">
+                            <span
+                                class="material-symbols-outlined text-yellow-400 mb-4 group-hover:scale-110 transition-transform">account_tree</span>
+                            <h4 class="font-bold text-white mb-2">Decision Router</h4>
+                            <p class="text-[12px] leading-relaxed text-text-gray">Logic-driven routing based on intent
+                                classification and confidence scores.</p>
+                        </div>
+                        <div
+                            class="bg-[#000000] p-6 rounded border border-border-dark hover:border-accent/30 hover:bg-white/[0.02] glow-hover transition-all group">
+                            <span
+                                class="material-symbols-outlined text-yellow-400 mb-4 group-hover:scale-110 transition-transform">fact_check</span>
+                            <h4 class="font-bold text-white mb-2">Output Sanity Check</h4>
+                            <p class="text-[12px] leading-relaxed text-text-gray">Final verification layer to ensure
+                                agent responses meet format requirements.</p>
+                        </div>
+                    </div>
+                    <div class="mb-16">
+                        <h3 class="text-lg font-semibold mb-6">Seamless Ecosystem Integrations. <span
+                                class="text-text-gray font-normal">Connect your enterprise data and infrastructure stack
+                                in seconds.</span></h3>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-[32px]">
+                            <div
+                                class="bg-[#000000] border border-border-dark p-6 rounded-sm flex flex-col items-center text-center hover:border-accent/40 transition-colors">
+                                <div class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center mb-4">
+                                    <span class="material-symbols-outlined text-accent">database</span>
+                                </div>
+                                <h4 class="text-sm font-bold text-white mb-2">Pinecone</h4>
+                                <span
+                                    class="text-[9px] uppercase font-bold text-accent bg-accent/10 px-2 py-0.5 rounded border border-accent/20">Connected</span>
+                            </div>
+                            <div
+                                class="bg-[#000000] border border-border-dark p-6 rounded-sm flex flex-col items-center text-center hover:border-accent/40 transition-colors">
+                                <div class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center mb-4">
+                                    <span class="material-symbols-outlined text-accent">search_insights</span>
+                                </div>
+                                <h4 class="text-sm font-bold text-white mb-2">Elasticsearch</h4>
+                                <span
+                                    class="text-[9px] uppercase font-bold text-accent bg-accent/10 px-2 py-0.5 rounded border border-accent/20">Connected</span>
+                            </div>
+                            <div
+                                class="bg-[#000000] border border-border-dark p-6 rounded-sm flex flex-col items-center text-center hover:border-accent/40 transition-colors">
+                                <div class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center mb-4">
+                                    <span class="material-symbols-outlined text-accent">memory</span>
+                                </div>
+                                <h4 class="text-sm font-bold text-white mb-2">Redis</h4>
+                                <span
+                                    class="text-[9px] uppercase font-bold text-accent bg-accent/10 px-2 py-0.5 rounded border border-accent/20">Connected</span>
+                            </div>
+                            <div
+                                class="bg-[#000000] border border-border-dark p-6 rounded-sm flex flex-col items-center text-center hover:border-accent/40 transition-colors">
+                                <div class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center mb-4">
+                                    <span class="material-symbols-outlined text-accent">ac_unit</span>
+                                </div>
+                                <h4 class="text-sm font-bold text-white mb-2">Snowflake</h4>
+                                <span
+                                    class="text-[9px] uppercase font-bold text-accent bg-accent/10 px-2 py-0.5 rounded border border-accent/20">Connected</span>
+                            </div>
+                            <div
+                                class="bg-[#000000] border border-border-dark p-6 rounded-sm flex flex-col items-center text-center hover:border-accent/40 transition-colors relative overflow-hidden group">
+                                <div class="tech-stamp opacity-0 group-hover:opacity-100 transition-opacity">DB_CONN_0x1
+                                </div>
+                                <div class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center mb-4">
+                                    <span class="material-symbols-outlined text-accent">storage</span>
+                                </div>
+                                <h4 class="text-sm font-bold text-white mb-2">MongoDB</h4>
+                                <span
+                                    class="text-[9px] uppercase font-bold text-accent bg-accent/10 px-2 py-0.5 rounded border border-accent/20 badge-pulse">Connected</span>
+                            </div>
+                            <div
+                                class="bg-[#000000] border border-border-dark p-6 rounded-sm flex flex-col items-center text-center hover:border-accent/40 transition-colors relative overflow-hidden group">
+                                <div class="tech-stamp opacity-0 group-hover:opacity-100 transition-opacity">S3_OBJ_V2
+                                </div>
+                                <div class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center mb-4">
+                                    <span class="material-symbols-outlined text-accent">cloud</span>
+                                </div>
+                                <h4 class="text-sm font-bold text-white mb-2">AWS S3</h4>
+                                <span
+                                    class="text-[9px] uppercase font-bold text-accent bg-accent/10 px-2 py-0.5 rounded border border-accent/20 badge-pulse">Connected</span>
+                            </div>
+                            <div
+                                class="bg-[#000000] border border-border-dark p-6 rounded-sm flex flex-col items-center text-center hover:border-accent/40 transition-colors relative overflow-hidden group">
+                                <div class="tech-stamp opacity-0 group-hover:opacity-100 transition-opacity">BQ_SQL_8G
+                                </div>
+                                <div class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center mb-4">
+                                    <span class="material-symbols-outlined text-accent">table_chart</span>
+                                </div>
+                                <h4 class="text-sm font-bold text-white mb-2">BigQuery</h4>
+                                <span
+                                    class="text-[9px] uppercase font-bold text-accent bg-accent/10 px-2 py-0.5 rounded border border-accent/20 badge-pulse">Connected</span>
+                            </div>
+                            <div
+                                class="bg-[#000000] border border-border-dark p-6 rounded-sm flex flex-col items-center text-center hover:border-accent/40 transition-colors relative overflow-hidden group">
+                                <div class="tech-stamp opacity-0 group-hover:opacity-100 transition-opacity">LCH_SDK_E9
+                                </div>
+                                <div class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center mb-4">
+                                    <span class="material-symbols-outlined text-accent">link</span>
+                                </div>
+                                <h4 class="text-sm font-bold text-white mb-2">LangChain</h4>
+                                <span
+                                    class="text-[9px] uppercase font-bold text-accent bg-accent/10 px-2 py-0.5 rounded border border-accent/20 badge-pulse">Connected</span>
+                            </div>
+                        </div>
+                    </div>
+                    <h2 class="text-4xl md:text-6xl font-black tracking-tighter uppercase text-white italic mb-12">
+                        Vision <span class="text-primary">Integrity Kernel.</span>
+                    </h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-20">
+                        <div class="glass-card p-10 group">
+                            <span class="technical-label">Layer 01 // Runtime</span>
+                            <h3 class="text-2xl font-black text-white mb-6 uppercase italic">Proprietary Node Execution
+                            </h3>
+                            <p class="text-gray-400 leading-relaxed font-medium">
+                                Execute complex vision nodes with absolute isolation. ML Forge utilizes local-first
+                                Gaussian kernels for state-managed operations that never leave your workstation.
+                            </p>
+                        </div>
+                        <div class="glass-card p-10 group">
+                            <span class="technical-label">Layer 02 // Governance</span>
+                            <h3 class="text-2xl font-black text-white mb-6 uppercase italic">Deterministic Flow Control
+                            </h3>
+                            <p class="text-gray-400 leading-relaxed font-medium">
+                                Guarantee output quality with hardware-native constraints. Our orchestration engine
+                                enforces strict trust boundaries between IDE processing and production export.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="scroll-mt-24" id="deployment">
+                    <div class="flex items-center gap-4 mb-8">
+                        <div class="w-10 h-10 bg-accent rounded flex items-center justify-center text-black">
+                            <span class="material-symbols-outlined">settings_input_component</span>
+                        </div>
+                        <h2 class="text-2xl font-bold tracking-tight">Deterministic Protocol Deployment</h2>
+                    </div>
+                    <hr class="border-border-dark mb-8" />
+                    <p class="mb-8 text-sm text-gray-300">
+                        <strong class="text-white block mb-2 text-base">Effortlessly utilize NVIDIA GPUs &amp; NVIDIA
+                            Enterprise AI products.</strong>
+                        Optimize cost latency and availability by running NVIDIA GPUs on any cloud, on-premise, and
+                        hybrid cloud without advanced infrastructure knowledge — removing complex setup, tuning, and
+                        troubleshooting.
+                    </p>
+                    <div
+                        class="bg-[#0A0A0A] border border-border-dark rounded-lg overflow-hidden mb-8 font-mono text-xs shadow-xl relative group">
+                        <div class="code-header">
+                            <div class="dot dot-red"></div>
+                            <div class="dot dot-yellow"></div>
+                            <div class="dot dot-green"></div>
+                            <span class="text-[10px] text-gray-400 ml-4 font-sans">deploy_nim.py</span>
+                        </div>
+                        <div class="p-6">
+                            <div class="text-gray-400 mb-2"># Create the deployment</div>
+                            <span class="text-purple-400">deployment</span> = <span
+                                class="text-blue-300">forge</span>.Deployment(<br />
+                                resource_name=<span class="text-green-400">"NIM - Llama 3.3 70B"</span>,<br />
+                                registered_model_version_id=registered_model.version_id,<br />
+                                prediction_environment_id=prediction_environment.id,<br />
+                                label=<span class="text-green-400">"NIM - Llama 3.3 70B"</span>,<br />
+                                use_case_ids=[use_case.id],<br />
+                            )
+                        </div>
+                        <div class="tech-stamp">DPL-SDK_M_02</div>
+                    </div>
+                </div>
+                <div class="scroll-mt-24 section-spacing" id="gen-ai">
+                    <div class="flex items-center gap-4 mb-8">
+                        <div class="w-10 h-10 bg-accent rounded flex items-center justify-center text-black">
+                            <span class="material-symbols-outlined">psychology</span>
+                        </div>
+                        <h2 class="text-2xl font-bold tracking-tight">Vision Synthesis and RAG</h2>
+                    </div>
+                    <hr class="border-border-dark mb-8" />
+                    <div class="mb-20">
+                        <h3 class="text-lg font-semibold mb-6">Benchmark &amp; Compare Vision Kernels. <span
+                                class="text-text-gray font-normal">Optimize for accuracy, speed, and cost with
+                                comparative dashboards.</span></h3>
+                        <div
+                            class="bg-card-dark border border-border-dark rounded-lg p-6 grid grid-cols-1 lg:grid-cols-2 gap-8 shadow-2xl relative overflow-hidden">
+                            <div class="absolute top-0 right-0 p-4">
+                                <span
+                                    class="text-[10px] bg-accent/10 text-accent px-2 py-1 rounded border border-accent/20">LIVE
+                                    DATA</span>
+                            </div>
+                            <div class="space-y-4">
+                                <div class="text-xs font-bold text-gray-400 uppercase tracking-widest">Accuracy vs.
+                                    Latency</div>
+                                <div class="h-48 flex items-end gap-3 pb-2 border-b border-border-dark">
+                                    <div class="flex-1 space-y-2">
+                                        <div
+                                            class="w-full bg-accent/20 border-x border-t border-accent/20 h-32 rounded-t-sm relative group cursor-help transition-all duration-700 animate-bar">
+                                            <div
+                                                class="absolute inset-0 bg-gradient-to-t from-accent/10 to-transparent">
+                                            </div>
+                                            <div
+                                                class="absolute -top-8 left-1/2 -translate-x-1/2 bg-black text-[10px] px-2 py-1 border border-border-dark rounded hidden group-hover:block z-10 whitespace-nowrap">
+                                                94% Acc / 120ms</div>
+                                        </div>
+                                        <div class="text-[9px] text-center text-gray-500 uppercase">Llama 3</div>
+                                    </div>
+                                    <div class="flex-1 space-y-2">
+                                        <div class="w-full bg-accent/40 border-x border-t border-accent/30 h-40 rounded-t-sm relative group cursor-help transition-all duration-700 animate-bar"
+                                            style="animation-delay: 0.1s">
+                                            <div
+                                                class="absolute inset-0 bg-gradient-to-t from-accent/20 to-transparent">
+                                            </div>
+                                            <div
+                                                class="absolute -top-8 left-1/2 -translate-x-1/2 bg-black text-[10px] px-2 py-1 border border-border-dark rounded hidden group-hover:block z-10">
+                                                96%</div>
+                                        </div>
+                                        <div class="text-[9px] text-center text-gray-500 uppercase">GPT-4o</div>
+                                    </div>
+                                    <div class="flex-1 space-y-2">
+                                        <div class="w-full bg-accent border-x border-t border-accent/50 h-24 rounded-t-sm relative group cursor-help transition-all duration-700 animate-bar"
+                                            style="animation-delay: 0.2s">
+                                            <div class="absolute inset-0 bg-gradient-to-t from-white/10 to-transparent">
+                                            </div>
+                                            <div
+                                                class="absolute -top-8 left-1/2 -translate-x-1/2 bg-black text-[10px] px-2 py-1 border border-border-dark rounded hidden group-hover:block z-10">
+                                                91%</div>
+                                        </div>
+                                        <div class="text-[9px] text-center text-gray-500 uppercase">Claude 3.5</div>
+                                    </div>
+                                    <div class="flex-1 space-y-2">
+                                        <div class="w-full bg-accent/10 border-x border-t border-accent/10 h-16 rounded-t-sm relative group cursor-help transition-all duration-700 animate-bar"
+                                            style="animation-delay: 0.3s">
+                                            <div class="absolute inset-0 bg-gradient-to-t from-accent/5 to-transparent">
+                                            </div>
+                                            <div
+                                                class="absolute -top-8 left-1/2 -translate-x-1/2 bg-black text-[10px] px-2 py-1 border border-border-dark rounded hidden group-hover:block z-10">
+                                                88%</div>
+                                        </div>
+                                        <div class="text-[9px] text-center text-gray-500 uppercase">Mistral 7B</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div
+                                    class="bg-black/40 p-4 border border-border-dark rounded-sm flex flex-col justify-between">
+                                    <div>
+                                        <div class="text-[10px] text-gray-400 uppercase mb-1">Cost per 1M tokens</div>
+                                        <div class="text-2xl font-bold text-white">$2.40</div>
+                                    </div>
+                                    <svg class="w-full h-8 mt-4" viewBox="0 0 100 20">
+                                        <path class="sparkline-green"
+                                            d="M0 15 Q 10 5, 20 12 T 40 8 T 60 14 T 80 6 T 100 10"></path>
+                                    </svg>
+                                </div>
+                                <div
+                                    class="bg-black/40 p-4 border border-border-dark rounded-sm flex flex-col justify-between">
+                                    <div>
+                                        <div class="text-[10px] text-gray-400 uppercase mb-1">Throughput (T/s)</div>
+                                        <div class="text-2xl font-bold text-white">84.2</div>
+                                    </div>
+                                    <svg class="w-full h-8 mt-4" viewBox="0 0 100 20">
+                                        <path class="sparkline-green" d="M0 10 Q 15 18, 30 8 T 50 12 T 75 5 T 100 2">
+                                        </path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-20">
+                        <h3 class="text-lg font-semibold mb-6">Develop Across Ecosystems. <span
+                                class="text-text-gray font-normal">Bridge the gap between prompt engineering and
+                                production code.</span></h3>
+                        <div class="bg-card-dark border border-border-dark rounded-lg overflow-hidden shadow-2xl mb-8">
+                            <div class="flex border-b border-border-dark">
+                                <div
+                                    class="flex-1 p-3 text-xs font-bold border-r border-border-dark bg-black/20 flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-sm">auto_awesome</span> Playground UI
+                                </div>
+                                <div class="flex-1 p-3 text-xs font-bold bg-black/40 flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-sm">code</span> Python SDK
+                                </div>
+                            </div>
+                            <div class="flex flex-col lg:flex-row h-[420px]">
+                                <div
+                                    class="flex-1 p-6 border-r border-border-dark space-y-6 overflow-y-auto bg-grid-bg">
+                                    <div class="space-y-2">
+                                        <label class="text-[10px] uppercase font-bold text-gray-500">System
+                                            Prompt</label>
+                                        <div
+                                            class="bg-black p-4 border border-border-dark rounded text-xs text-gray-300">
+                                            You are a specialized legal assistant focused on contract summarization...
+                                        </div>
+                                    </div>
+                                    <div class="space-y-2">
+                                        <label class="text-[10px] uppercase font-bold text-gray-500">Parameters</label>
+                                        <div class="grid grid-cols-2 gap-4">
+                                            <div
+                                                class="bg-black p-3 border border-border-dark rounded flex justify-between items-center">
+                                                <span class="text-[10px]">Temperature</span>
+                                                <span class="text-[10px] font-bold text-accent">0.7</span>
+                                            </div>
+                                            <div
+                                                class="bg-black p-3 border border-border-dark rounded flex justify-between items-center">
+                                                <span class="text-[10px]">Max Tokens</span>
+                                                <span class="text-[10px] font-bold text-accent">2048</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div
+                                        class="bg-accent text-black font-bold text-xs py-3 rounded text-center cursor-pointer hover:bg-accent-hover transition-colors">
+                                        RUN EXPERIMENT
+                                    </div>
+                                </div>
+                                <div class="flex-1 p-6 bg-[#080808] font-mono text-xs overflow-y-auto">
+                                    <div class="flex justify-between items-center mb-4">
+                                        <span class="text-[10px] text-gray-500">main.py</span>
+                                        <span
+                                            class="material-symbols-outlined text-sm text-gray-500">content_copy</span>
+                                    </div>
+                                    <span class="syntax-keyword">import</span> mlforge <span
+                                        class="syntax-keyword">as</span> forge<br /><br />
+                                    <span class="syntax-variable">kernel</span> = forge.Kernel(token=<span
+                                        class="syntax-string">"forge_api_..."</span>)<br />
+                                    <span class="syntax-variable">experiment</span> =
+                                    forge.VisionExperiment.create(<br />
+                                        name=<span class="syntax-string">"Legal-Summary-v1"</span>,<br />
+                                        model=<span class="syntax-string">"gpt-4o"</span>,<br />
+                                        prompt=<span class="syntax-string">"Summarize the following
+                                        contract..."</span>,<br />
+                                        temperature=<span class="syntax-variable">0.7</span><br />
+                                    )<br /><br />
+                                    <span class="syntax-comment"># Execute protocol and synchronize local
+                                        state</span><br />
+                                    <span
+                                        class="syntax-variable">experiment</span>.run_and_evaluate(kernel=kernel)<br />
+                                    <span class="syntax-keyword">print</span>(f<span class="syntax-string">"Accuracy:
+                                        {experiment.metrics.accuracy}"</span>)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <div class="bg-card-dark p-4 border border-border-dark rounded-sm flex items-start gap-4">
+                                <span class="material-symbols-outlined text-purple-card/70 font-light">hub</span>
+                                <div>
+                                    <h4 class="text-xs font-bold mb-1">Universal LLM Gateway</h4>
+                                    <p class="text-[10px] text-gray-400">Standardized API across 50+ models.</p>
+                                </div>
+                            </div>
+                            <div class="bg-card-dark p-4 border border-border-dark rounded-sm flex items-start gap-4">
+                                <span class="material-symbols-outlined text-purple-card/70 font-light">speed</span>
+                                <div>
+                                    <h4 class="text-xs font-bold mb-1">Optimized GPU Access</h4>
+                                    <p class="text-[10px] text-gray-400">Zero-config infrastructure scaling.</p>
+                                </div>
+                            </div>
+                            <div class="bg-card-dark p-4 border border-border-dark rounded-sm flex items-start gap-4">
+                                <span class="material-symbols-outlined text-purple-card/70 font-light">security</span>
+                                <div>
+                                    <h4 class="text-xs font-bold mb-1">PII Masking Layer</h4>
+                                    <p class="text-[10px] text-gray-400">Automatic compliance scrubbing.</p>
+                                </div>
+                            </div>
+                            <div class="bg-card-dark p-4 border border-border-dark rounded-sm flex items-start gap-4">
+                                <span class="material-symbols-outlined text-purple-card/70 font-light">analytics</span>
+                                <div>
+                                    <h4 class="text-xs font-bold mb-1">Cost Projection</h4>
+                                    <p class="text-[10px] text-gray-400">Estimate token spend pre-run.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-20">
+                        <h3 class="text-lg font-semibold mb-6">Build Advanced RAG Systems. <span
+                                class="text-text-gray font-normal">Optimize retrieval pipelines with precision
+                                orchestration.</span></h3>
+                        <div
+                            class="bg-card-dark border border-border-dark rounded-lg p-8 mb-8 shadow-2xl relative overflow-hidden">
+                            <div class="max-w-3xl mx-auto bg-[#1a1a1a] rounded border border-border-dark p-6">
+                                <div class="flex items-center justify-between mb-8 border-b border-border-dark pb-4">
+                                    <h4 class="text-sm font-bold">Vector DB Configuration</h4>
+                                    <div class="flex gap-2">
+                                        <span class="w-2 h-2 rounded-full bg-red-500/50"></span>
+                                        <span class="w-2 h-2 rounded-full bg-yellow-500/50"></span>
+                                        <span class="w-2 h-2 rounded-full bg-green-500/50"></span>
+                                    </div>
+                                </div>
+                                <div class="space-y-8">
+                                    <div class="space-y-4">
+                                        <div
+                                            class="flex justify-between text-[10px] font-bold uppercase tracking-wider text-gray-500">
+                                            <span>Chunk Size (tokens)</span>
+                                            <span class="text-accent">512</span>
+                                        </div>
+                                        <div class="h-1 bg-gray-800 rounded-full relative overflow-hidden">
+                                            <div
+                                                class="absolute left-0 top-0 h-full w-1/2 bg-accent rounded-full transition-all duration-1000 origin-left animate-[barGrow_1.5s_ease-out]">
+                                            </div>
+                                            <div
+                                                class="absolute left-1/2 top-1/2 -translate-y-1/2 -translate-x-1/2 w-3 h-3 bg-white border-2 border-accent rounded-full z-10 shadow-[0_0_10px_#4ADE80]">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="space-y-4">
+                                        <div
+                                            class="flex justify-between text-[10px] font-bold uppercase tracking-wider text-gray-500">
+                                            <span>Overlap (%)</span>
+                                            <span class="text-accent">15%</span>
+                                        </div>
+                                        <div class="h-1 bg-gray-800 rounded-full relative overflow-hidden">
+                                            <div
+                                                class="absolute left-0 top-0 h-full w-[15%] bg-accent rounded-full transition-all duration-1000 origin-left animate-[barGrow_1.5s_ease-out_delay-200]">
+                                            </div>
+                                            <div
+                                                class="absolute left-[15%] top-1/2 -translate-y-1/2 -translate-x-1/2 w-3 h-3 bg-white border-2 border-accent rounded-full z-10 shadow-[0_0_10px_#4ADE80]">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div
+                                            class="p-3 border border-border-dark bg-black/40 rounded flex items-center gap-3">
+                                            <span class="material-symbols-outlined text-sm text-gray-500">schema</span>
+                                            <span class="text-[10px]">Distance: Cosine Similarity</span>
+                                        </div>
+                                        <div
+                                            class="p-3 border border-border-dark bg-black/40 rounded flex items-center gap-3">
+                                            <span class="material-symbols-outlined text-sm text-gray-500">layers</span>
+                                            <span class="text-[10px]">Embedding: text-embedding-3-small</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="bg-card-dark p-6 rounded border border-border-dark">
+                                <h4 class="font-bold text-white mb-3 flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-accent text-lg">check_circle</span>
+                                    Semantic Chunking
+                                </h4>
+                                <p class="text-xs text-text-gray leading-relaxed">
+                                    Intelligently split documents based on context and meaning rather than character
+                                    counts, ensuring high-quality retrieval contexts for LLMs.
+                                </p>
+                            </div>
+                            <div class="bg-card-dark p-6 rounded border border-border-dark">
+                                <h4 class="font-bold text-white mb-3 flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-accent text-lg">check_circle</span>
+                                    Cross-Encoder Reranking
+                                </h4>
+                                <p class="text-xs text-text-gray leading-relaxed">
+                                    Improve precision by adding a reranking layer that evaluates the most relevant top-K
+                                    documents against the query before generation.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold mb-6">Performance &amp; Cost Analytics. <span
+                                class="text-text-gray font-normal">Monitor drift and spend in real-time.</span></h3>
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <!-- Model Drift -->
+                            <div class="glass-card p-8 overflow-hidden relative group">
+                                <div class="flex items-center justify-between mb-10">
+                                    <div>
+                                        <span class="technical-label">Metric Layer // 01</span>
+                                        <h4 class="text-white font-black uppercase italic tracking-tighter text-xl">
+                                            Kernel Stability</h4>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="relative flex h-2 w-2">
+                                            <span
+                                                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
+                                            <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                                        </span>
+                                        <span
+                                            class="text-[9px] font-black text-red-500 uppercase tracking-widest bg-red-500/10 px-2 py-0.5 rounded border border-red-500/20">High
+                                            Variance</span>
+                                    </div>
+                                </div>
+                                <div
+                                    class="h-24 w-full relative overflow-hidden bg-black/40 rounded border border-white/5">
+                                    <div class="absolute inset-0 opacity-10 dashboard-grid"></div>
+                                    <svg class="w-[200%] h-full realtime-chart-path" viewBox="0 0 200 60"
+                                        preserveAspectRatio="none">
+                                        <path
+                                            d="M0 45 L 20 20 L 40 40 L 60 15 L 80 45 L 100 25 L 120 45 L 140 20 L 160 40 L 180 15 L 200 45"
+                                            fill="none" stroke="#F87171" stroke-width="1.5" stroke-opacity="0.6"></path>
+                                        <path
+                                            d="M0 45 L 20 20 L 40 40 L 60 15 L 80 45 L 100 25 L 120 45 L 140 20 L 160 40 L 180 15 L 200 45"
+                                            fill="none" stroke="#F87171" stroke-width="2.5" stroke-linecap="round"
+                                            class="drop-shadow-[0_0_8px_rgba(248,113,113,0.5)]"></path>
+                                    </svg>
+                                </div>
+                                <div class="mt-6 flex justify-between items-center text-[10px] font-mono text-gray-600">
+                                    <span>SNAPSHOT_ID: DRF_882</span>
+                                    <span>LATENCY: 14ms</span>
+                                </div>
+                            </div>
+
+                            <!-- Compute Spend -->
+                            <div class="glass-card p-8 overflow-hidden relative group">
+                                <div class="flex items-center justify-between mb-10">
+                                    <div>
+                                        <span class="technical-label">Metric Layer // 02</span>
+                                        <h4 class="text-white font-black uppercase italic tracking-tighter text-xl">
+                                            Resource Velocity</h4>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-2xl font-black text-white italic tracking-tighter text-glow">
+                                            $42.1K</div>
+                                        <div class="text-[9px] text-primary uppercase font-bold">Local Efficiency +12%
+                                        </div>
+                                    </div>
+                                </div>
+                                <div
+                                    class="h-24 w-full relative overflow-hidden bg-black/40 rounded border border-white/5">
+                                    <div class="absolute inset-0 opacity-10 dashboard-grid"></div>
+                                    <svg class="w-[200%] h-full realtime-chart-path" viewBox="0 0 200 60"
+                                        preserveAspectRatio="none" style="animation-duration: 15s;">
+                                        <path d="M0 60 L 0 45 L 20 35 L 40 50 L 60 25 L 80 40 L 100 15 L 100 60 Z"
+                                            fill="rgba(66, 255, 153, 0.05)"></path>
+                                        <path
+                                            d="M0 45 L 20 35 L 40 50 L 60 25 L 80 40 L 100 15 L 120 45 L 140 35 L 160 50 L 180 25 L 200 40"
+                                            fill="none" stroke="#66FF99" stroke-width="2" stroke-linecap="round"
+                                            class="drop-shadow-[0_0_8px_rgba(102,255,153,0.5)]"></path>
+                                    </svg>
+                                </div>
+                                <div class="mt-6 flex justify-between items-center text-[10px] font-mono text-gray-600">
+                                    <span>SNAPSHOT_ID: CMP_001</span>
+                                    <span>EFFICIENCY: 98.4%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="scroll-mt-24 section-spacing" id="governance">
+                    <div class="flex items-center gap-4 mb-8">
+                        <div class="w-10 h-10 bg-accent rounded flex items-center justify-center text-black">
+                            <span class="material-symbols-outlined">visibility</span>
+                        </div>
+                        <h2 class="text-2xl font-bold tracking-tight">Protocol Governance and Kernel Observability</h2>
+                    </div>
+                    <hr class="border-border-dark mb-8" />
+                    <p class="mb-8 text-sm text-gray-300">
+                        <strong class="text-white">Bolt-on governance.</strong> Enable ML Forge to track and govern any
+                        AI app built anywhere with just a few lines of code.
+                    </p>
+                    <div
+                        class="bg-[#0A0A0A] border border-border-dark rounded-lg overflow-hidden mb-12 font-mono text-xs shadow-lg relative group">
+                        <div class="code-header">
+                            <div class="dot dot-red"></div>
+                            <div class="dot dot-yellow"></div>
+                            <div class="dot dot-green"></div>
+                            <span class="text-[10px] text-gray-400 ml-4 font-sans">observability.py</span>
+                            <div class="ml-auto flex items-center gap-2">
+                                <div class="w-2 h-2 rounded-full bg-accent animate-pulse"></div>
+                                <span class="text-[8px] text-accent uppercase tracking-tighter">Live Stream</span>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <div class="text-gray-500 mb-2"># Enable observability</div>
+                            <span class="text-blue-300">client</span> = OpenAI(base_url=base_url,
+                            api_key=api_key)<br /><br />
+                            <span class="text-purple-400">completion</span> = client.chat.completions.create(<br />
+                              model=f<span class="text-green-400">"{model_name}"</span>,<br />
+                              messages=[<br />
+                                {<span class="text-green-400">"role"</span>: <span
+                                class="text-green-400">"system"</span>,
+                            <span class="text-green-400">"content"</span>: <span class="text-green-400">"You are a
+                                helpful
+                                assistant."</span>},<br />
+                                {<span class="text-green-400">"role"</span>: <span class="text-green-400">"user"</span>,
+                            <span class="text-green-400">"content"</span>: <span class="text-green-400">"Where is
+                                ML Forge
+                                HQ"</span>}<br />
+                              ],<br />
+                            )
+                        </div>
+                        <div class="tech-stamp">OBS-V9.1_TRC</div>
+                    </div>
+                    <div class="mb-16">
+                        <span class="technical-label">Intervention Layer</span>
+                        <h3 class="text-2xl font-black text-white italic tracking-tighter uppercase mb-10">Real-time
+                            <span class="text-primary text-glow">Kernel Guards.</span>
+                        </h3>
+
+                        <div class="glass-card p-12 relative overflow-hidden group">
+                            <div
+                                class="absolute inset-0 opacity-5 dashboard-grid group-hover:opacity-10 transition-opacity">
+                            </div>
+
+                            <div class="flex flex-col lg:flex-row items-center gap-16 relative z-10">
+                                <!-- Chat Simulation -->
+                                <div class="w-full lg:w-72 flex-shrink-0">
+                                    <div class="bg-black/80 border border-white/10 rounded overflow-hidden shadow-2xl">
+                                        <div
+                                            class="bg-white/5 px-4 py-2 border-b border-white/5 flex items-center justify-between">
+                                            <div class="flex gap-1">
+                                                <div class="w-1.5 h-1.5 rounded-full bg-red-500/50"></div>
+                                                <div class="w-1.5 h-1.5 rounded-full bg-yellow-500/50"></div>
+                                                <div class="w-1.5 h-1.5 rounded-full bg-green-500/50"></div>
+                                            </div>
+                                            <span
+                                                class="text-[8px] font-mono text-gray-500 uppercase tracking-widest">Local
+                                                Session</span>
+                                        </div>
+                                        <div class="p-4 space-y-4">
+                                            <div class="flex gap-2">
+                                                <div class="w-5 h-5 rounded-sm bg-primary/20 flex-shrink-0"></div>
+                                                <div class="p-2 bg-white/5 rounded-sm text-[9px] text-gray-400">
+                                                    Requesting kernel access for restricted weights...</div>
+                                            </div>
+                                            <div class="flex gap-2 flex-row-reverse text-right">
+                                                <div
+                                                    class="w-5 h-5 rounded-sm bg-primary flex-shrink-0 flex items-center justify-center text-black font-black text-[8px]">
+                                                    K</div>
+                                                <div
+                                                    class="p-2 bg-primary/10 border border-primary/20 rounded-sm text-[9px] text-primary">
+                                                    Intervention required. Redacting PII patterns.</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Central Logic -->
+                                <div class="flex-1 w-full space-y-6">
+                                    <div class="relative py-8 border-y border-white/5">
+                                        <div
+                                            class="absolute -top-3 left-0 bg-background-dark px-2 text-[9px] font-black text-primary uppercase tracking-widest">
+                                            ML Forge Kernel Guard Intervention</div>
+
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div
+                                                class="p-4 bg-white/5 border border-white/10 rounded flex items-center justify-between group hover:border-primary/40 transition-colors">
+                                                <div class="flex items-center gap-3">
+                                                    <span
+                                                        class="material-symbols-outlined text-primary text-xl animate-pulse">shield</span>
+                                                    <div>
+                                                        <div class="text-white text-[10px] font-black">PII_DETECTOR v4
+                                                        </div>
+                                                        <div class="text-[8px] text-gray-500 font-mono">STATUS: SCANNING
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="text-[9px] text-primary font-bold">ACTIVE</div>
+                                            </div>
+                                            <div
+                                                class="p-4 bg-white/5 border border-white/10 rounded flex items-center justify-between group hover:border-primary/40 transition-colors">
+                                                <div class="flex items-center gap-3">
+                                                    <span
+                                                        class="material-symbols-outlined text-primary text-xl animate-pulse">policy</span>
+                                                    <div>
+                                                        <div class="text-white text-[10px] font-black">
+                                                            COMPLIANCE_STRATUM</div>
+                                                        <div class="text-[8px] text-gray-500 font-mono">STATUS:
+                                                            MONITORING</div>
+                                                    </div>
+                                                </div>
+                                                <div class="text-[9px] text-primary font-bold">READY</div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Animated Warning -->
+                                        <div
+                                            class="mt-8 flex items-center gap-4 bg-red-500/5 border border-red-500/20 p-4 rounded animate-pulse">
+                                            <span class="material-symbols-outlined text-red-500">warning</span>
+                                            <div>
+                                                <div class="text-[10px] font-black text-white uppercase italic">
+                                                    Anomalous Pattern Detected</div>
+                                                <div class="text-[9px] text-gray-500 font-mono">ID: ERR_9029 | LAYER:
+                                                    KERNEL_INPUT</div>
+                                            </div>
+                                            <div
+                                                class="ml-auto text-[9px] font-black text-red-500 uppercase tracking-widest px-2 py-1 border border-red-500/20 bg-red-500/10">
+                                                Action Taken</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="bg-background-dark py-32 border-t border-white/5 relative overflow-hidden">
+        <div class="absolute inset-0 dashboard-grid opacity-5"></div>
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <span class="technical-label inline-block">System Topology</span>
+                <h2 class="text-4xl font-black text-white uppercase italic tracking-tighter">Kernel <span
+                        class="text-primary">Communication Fabric.</span></h2>
+            </div>
+
+            <div class="glass-card p-12 relative overflow-hidden">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-12">
+                    <!-- Node 1 -->
+                    <div class="flex flex-col items-center gap-4">
+                        <div
+                            class="w-16 h-16 rounded border border-primary/20 bg-primary/5 flex items-center justify-center relative group">
+                            <span class="material-symbols-outlined text-primary text-3xl animate-pulse">database</span>
+                            <div class="absolute -top-1 -right-1 w-3 h-3 bg-primary rounded-full animate-ping"></div>
+                        </div>
+                        <div class="text-[10px] font-black text-gray-400 uppercase tracking-widest">INGEST_VDB</div>
+                    </div>
+
+                    <!-- Connection 1 -->
+                    <div class="flex-1 h-[1px] bg-gradient-to-r from-primary/40 to-primary hidden md:block relative">
+                        <div
+                            class="absolute top-0 left-0 h-full bg-white w-4 blur-sm animate-[chart-scroll_2s_linear_infinite]">
+                        </div>
+                    </div>
+
+                    <!-- Hub -->
+                    <div class="flex flex-col items-center gap-4">
+                        <div
+                            class="w-24 h-24 rounded-full border-2 border-primary bg-black flex items-center justify-center shadow-[0_0_30px_rgba(102,255,153,0.3)]">
+                            <span class="material-symbols-outlined text-primary text-5xl">hub</span>
+                        </div>
+                        <div class="text-[10px] font-black text-white uppercase tracking-widest">MLFORGE_CORE</div>
+                    </div>
+
+                    <!-- Connection 2 -->
+                    <div class="flex-1 h-[1px] bg-gradient-to-l from-primary/40 to-primary hidden md:block relative">
+                        <div
+                            class="absolute top-0 right-0 h-full bg-white w-4 blur-sm animate-[chart-scroll_2s_linear_infinite]">
+                        </div>
+                    </div>
+
+                    <!-- Node 2 -->
+                    <div class="flex flex-col items-center gap-4">
+                        <div
+                            class="w-16 h-16 rounded border border-white/10 bg-white/5 flex items-center justify-center relative group">
+                            <span class="material-symbols-outlined text-gray-500 text-3xl">memory</span>
+                        </div>
+                        <div class="text-[10px] font-black text-gray-400 uppercase tracking-widest">COMPUTE_X64</div>
+                    </div>
+                </div>
+
+                <div class="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="p-4 border border-white/5 bg-black/40 rounded text-center">
+                        <div class="text-primary font-black text-lg">0.4ms</div>
+                        <div class="text-[8px] text-gray-600 uppercase">INTERNAL_LATENCY</div>
+                    </div>
+                    <div class="p-4 border border-white/5 bg-black/40 rounded text-center">
+                        <div class="text-primary font-black text-lg">99.9%</div>
+                        <div class="text-[8px] text-gray-600 uppercase">UPTIME_KERNEL</div>
+                    </div>
+                    <div class="p-4 border border-white/5 bg-black/40 rounded text-center">
+                        <div class="text-primary font-black text-lg">1.2TB</div>
+                        <div class="text-[8px] text-gray-600 uppercase">THROUGHPUT_MAX</div>
+                    </div>
+                    <div class="p-4 border border-white/5 bg-black/40 rounded text-center">
+                        <div class="text-primary font-black text-lg">ENABLED</div>
+                        <div class="text-[8px] text-gray-600 uppercase">SSL_ENCRYPTION</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="bg-background-dark py-40 border-t border-white/5 relative overflow-hidden">
+        <div class="absolute inset-0 dashboard-grid opacity-5"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+            <span class="technical-label inline-block">Next Protocol Step</span>
+            <h2 class="text-6xl md:text-8xl font-black text-white mb-10 tracking-tighter uppercase italic">Tour the
+                <span class="text-primary text-glow">Forge.</span>
+            </h2>
+            <p class="text-gray-400 text-xl max-w-2xl mx-auto mb-12 font-medium">Explore the orchestration kernel and
+                edge export suite in an interactive deep-dive.</p>
+            <button
+                class="bg-primary text-black px-12 py-5 text-[10px] font-black tracking-widest rounded-sm hover:bg-primary-hover transition-all uppercase">Initialize
+                Product Tour</button>
+        </div>
+    </section>
+    <footer class="bg-background-dark pt-32 pb-16 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-12 mb-24">
+                <div class="col-span-2 md:col-span-1">
+                    <span
+                        class="flex items-center gap-2 text-2xl font-black tracking-tighter text-white uppercase italic mb-8">
+                        <span class="material-symbols-outlined text-primary scale-125">token</span>
+                        ML Forge
+                    </span>
+                </div>
+                <div>
+                    <h3 class="technical-label mb-8">Protocol</h3>
+                    <ul class="space-y-4 text-[10px] font-black uppercase tracking-widest text-gray-500">
+                        <li><a class="hover:text-primary transition-colors" href="#">Core Engine</a></li>
+                        <li><a class="hover:text-primary transition-colors" href="#">Integrity Kernel</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="technical-label mb-8">Infrastructure</h3>
+                    <ul class="space-y-4 text-[10px] font-black uppercase tracking-widest text-gray-500">
+                        <li><a class="hover:text-primary transition-colors" href="#">Edge Export</a></li>
+                        <li><a class="hover:text-primary transition-colors" href="#">Deterministic SDK</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="technical-label mb-8">Verification</h3>
+                    <ul class="space-y-4 text-[10px] font-black uppercase tracking-widest text-gray-500">
+                        <li><a class="hover:text-primary transition-colors" href="#">Certifications</a></li>
+                        <li><a class="hover:text-primary transition-colors" href="#">Audit Logs</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="technical-label mb-8">Foundation</h3>
+                    <ul class="space-y-4 text-[10px] font-black uppercase tracking-widest text-gray-500">
+                        <li><a class="hover:text-primary transition-colors" href="#">Governance</a></li>
+                        <li><a class="hover:text-primary transition-colors" href="#">Safety Layer</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div
+                class="border-t border-white/5 pt-12 flex flex-col md:flex-row justify-between items-center text-[9px] font-black uppercase tracking-[0.2em] text-gray-600">
+                <div class="flex space-x-12 mb-8 md:mb-0">
+                    <a class="hover:text-white transition-colors" href="#">Privacy Protocol</a>
+                    <a class="hover:text-white transition-colors" href="#">Service Terms</a>
+                    <a class="hover:text-white transition-colors" href="#">Legal Bounds</a>
+                </div>
+                <div class="flex items-center gap-4">
+                    <span>© 2024 ML FORGE INFRASTRUCTURE</span>
+                    <span class="w-1 h-1 bg-gray-600 rounded-full"></span>
+                    <span class="text-primary italic">ALL SYSTEMS NOMINAL</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+
+</html>

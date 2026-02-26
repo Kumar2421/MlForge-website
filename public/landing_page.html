@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>ML Forge - Local-First Vision AI IDE</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;family=Manrope:wght@400;500;700;800&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries,typography"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#66FF99",
+                        "primary-hover": "#52E085",
+                        "background-light": "#FFFFFF",
+                        "background-dark": "#0B0B0B",
+                        "surface-dark": "#141414",
+                        "accent-yellow": "#FFFF33",
+                        "text-light": "#111111",
+                        "text-dark": "#E5E5E5",
+                        "subtle-dark": "#1A1A1A",
+                    },
+                    fontFamily: {
+                        sans: ["Inter", "sans-serif"],
+                        display: ["Manrope", "sans-serif"],
+                        mono: ["Space Mono", "monospace"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "2px",
+                        md: "4px",
+                        lg: "8px",
+                        xl: "12px",
+                    },
+                    animation: {
+                        'border-beam': 'border-beam calc(var(--duration)*1s) infinite linear',
+                    },
+                    keyframes: {
+                        'border-beam': {
+                            '100%': {
+                                'offset-distance': '100%',
+                            },
+                        },
+                    },
+                },
+            },
+        };
+    </script>
+    <style type="text/tailwindcss">
+        @keyframes dataStream {
+            0% { transform: translateY(-100%) translateX(0); opacity: 0; }
+            50% { opacity: 0.3; }
+            100% { transform: translateY(100vh) translateX(20px); opacity: 0; }
+        }
+        .data-particle {
+            position: absolute;
+            width: 1px;
+            height: 120px;
+            background: linear-gradient(to bottom, transparent, #66FF99);
+            animation: dataStream 3s linear infinite;
+        }
+        .glass-card {
+            background: rgba(20, 20, 20, 0.4);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-card:hover {
+            border-color: #66FF99;
+            box-shadow: 0 0 30px rgba(102, 255, 153, 0.1);
+            transform: translateY(-8px);
+            background: rgba(102, 255, 153, 0.03);
+        }
+        .pulse-draw:hover .icon-box {
+            animation: boxDraw 1s infinite ease-in-out;
+        }
+        @keyframes boxDraw {
+            0%, 100% { transform: scale(1); opacity: 0.4; }
+            50% { transform: scale(1.15); opacity: 0.8; border-width: 2px; }
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .gradient-border {
+            position: relative;
+            background: #0B0B0B;
+            border-radius: 8px;
+        }
+        .gradient-border::before {
+            content: "";
+            position: absolute;
+            inset: -1px;
+            background: linear-gradient(45deg, #66FF99, #FFFF33, transparent);
+            border-radius: 8px;
+            z-index: -1;
+            opacity: 0.3;
+        }.dashboard-grid {
+            background-size: 40px 40px;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        }
+        .chart-line-clip {
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+        }.svg-chart-line {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: dash 5s linear forwards infinite;
+        }
+        @keyframes dash {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100vh); }
+        }
+        @keyframes chart-scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        @keyframes slide-up {
+            0% { transform: translateY(20px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+        .animate-slide-up {
+            animation: slide-up 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            opacity: 0;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark font-sans selection:bg-primary selection:text-black">
+    <nav
+        class="sticky top-0 z-50 w-full bg-white/90 dark:bg-background-dark/90 backdrop-blur-md border-b border-gray-100 dark:border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <div class="flex items-center">
+                    <span
+                        class="flex items-center gap-2 text-2xl font-black tracking-tighter text-black dark:text-white uppercase italic">
+                        <span class="material-symbols-outlined text-primary scale-125">token</span>
+                        ML Forge
+                    </span>
+                    <div class="hidden md:flex ml-12 space-x-10">
+                        <a class="text-[10px] font-black uppercase tracking-widest text-gray-500 hover:text-white transition-colors"
+                            href="landing_page.html">Home</a>
+                        <a class="text-[10px] font-black uppercase tracking-widest text-gray-500 hover:text-white transition-colors"
+                            href="agentic_page.html">Protocols</a>
+                        <a class="text-[10px] font-black uppercase tracking-widest text-gray-500 hover:text-white transition-colors"
+                            href="vector_db_page.html">Documentation</a>
+                        <a class="text-[10px] font-black uppercase tracking-widest text-gray-500 hover:text-white transition-colors"
+                            href="download_page.html">Download</a>
+                        <a class="text-[10px] font-black uppercase tracking-widest text-gray-500 hover:text-white transition-colors"
+                            href="contact_page.html">Contact</a>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-6">
+                    <a class="text-sm font-bold text-gray-700 dark:text-gray-300" href="#">Log In</a>
+                    <a class="hidden md:inline-flex items-center px-6 py-2.5 text-sm font-extrabold rounded-md text-black bg-primary hover:bg-primary-hover transition-all"
+                        href="#">
+                        Download
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <header class="relative pt-32 pb-48 overflow-hidden bg-background-dark border-b border-white/5">
+        <div class="absolute inset-0 dashboard-grid animate-pulse" style="animation-duration: 4s;"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-background-dark/50 to-background-dark"></div>
+
+        <!-- Scanline Effect -->
+        <div class="absolute inset-0 pointer-events-none overflow-hidden">
+            <div class="w-full h-[2px] bg-primary/20 absolute top-0 animate-[scanline_8s_linear_infinite]"></div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center md:text-left">
+                <div
+                    class="inline-flex items-center gap-2 px-3 py-1 rounded bg-primary/10 border border-primary/20 text-primary text-[10px] font-black uppercase tracking-[0.2em] mb-12 animate-slide-up">
+                    <span class="relative flex h-2 w-2">
+                        <span
+                            class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+                    </span>
+                    Production Protocol // release_v4.0
+                </div>
+
+                <h1
+                    class="text-6xl md:text-[120px] font-black text-white leading-[0.85] tracking-tighter uppercase italic mb-12 animate-slide-up">
+                    The Local-First <br />
+                    <span class="text-primary text-glow">Vision IDE.</span>
+                </h1>
+
+                <p class="text-xl md:text-2xl text-gray-400 max-w-2xl leading-relaxed font-medium mb-16 animate-slide-up"
+                    style="animation-delay: 0.1s;">
+                    Engineering professional Vision AI workflows with zero cloud latency. Ingest, label, train, and
+                    deploy deterministic models directly from your workstation.
+                </p>
+
+                <div class="flex flex-wrap gap-6 animate-slide-up" style="animation-delay: 0.2s;">
+                    <a class="group relative px-10 py-5 bg-primary text-black text-[11px] font-black uppercase tracking-widest rounded-sm hover:shadow-[0_0_30px_rgba(102,255,153,0.4)] transition-all overflow-hidden"
+                        href="#">
+                        <span class="relative z-10 flex items-center gap-2">
+                            Initialize Download
+                            <span
+                                class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                        </span>
+                    </a>
+                    <a class="px-10 py-5 border border-white/10 bg-white/5 text-white text-[11px] font-black uppercase tracking-widest rounded-sm hover:bg-white/10 transition-all"
+                        href="agentic_page.html">
+                        View Core Specs
+                    </a>
+                </div>
+            </div>
+
+            <!-- Tech Stems -->
+            <div
+                class="mt-24 grid grid-cols-2 md:grid-cols-4 gap-8 opacity-40 grayscale hover:grayscale-0 transition-all">
+                <div class="flex items-center gap-3 border-l border-white/20 pl-6">
+                    <div class="text-[20px] font-black text-white italic">NVIDIA</div>
+                    <div class="text-[8px] text-gray-500 font-mono tracking-tighter">SDK INTEGRATED</div>
+                </div>
+                <div class="flex items-center gap-3 border-l border-white/20 pl-6">
+                    <div class="text-[20px] font-black text-white italic">TENSORRT</div>
+                    <div class="text-[8px] text-gray-500 font-mono tracking-tighter">NATIVE OPTIMIZED</div>
+                </div>
+                <div class="flex items-center gap-3 border-l border-white/20 pl-6">
+                    <div class="text-[20px] font-black text-white italic">DETERMINISTIC</div>
+                    <div class="text-[8px] text-gray-500 font-mono tracking-tighter">BIASED KERNELS</div>
+                </div>
+                <div class="flex items-center gap-3 border-l border-white/20 pl-6">
+                    <div class="text-[20px] font-black text-white italic">PYTORCH</div>
+                    <div class="text-[8px] text-gray-500 font-mono tracking-tighter">CORE EXECUTION</div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <section class="bg-accent-yellow py-32 relative z-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-24 max-w-4xl">
+                <h2 class="text-4xl md:text-6xl font-black text-black leading-[1.1] tracking-tighter">
+                    Why ml forge Exists
+                </h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 border-t border-black/10 pt-16">
+                <div class="relative pl-6 border-l-2 border-black">
+                    <div class="mb-4">
+                        <span class="material-symbols-outlined text-4xl text-black">terminal</span>
+                    </div>
+                    <h3 class="font-black text-black text-xl mb-3">No Environment Setup</h3>
+                    <ul class="text-black/80 text-base font-medium leading-relaxed list-none space-y-1">
+                        <li>- No Python configuration</li>
+                        <li>- No CUDA debugging</li>
+                        <li>- No dependency conflicts</li>
+                    </ul>
+                </div>
+                <div class="relative pl-6 border-l-2 border-black">
+                    <div class="mb-4">
+                        <span class="material-symbols-outlined text-4xl text-black">history</span>
+                    </div>
+                    <h3 class="font-black text-black text-xl mb-3">Deterministic Training</h3>
+                    <ul class="text-black/80 text-base font-medium leading-relaxed list-none space-y-1">
+                        <li>- Config snapshots</li>
+                        <li>- Dataset versioning</li>
+                        <li>- Reproducible runs</li>
+                    </ul>
+                </div>
+                <div class="relative pl-6 border-l-2 border-black">
+                    <div class="mb-4">
+                        <span class="material-symbols-outlined text-4xl text-black">settings_input_component</span>
+                    </div>
+                    <h3 class="font-black text-black text-xl mb-3">End-to-End Control</h3>
+                    <ul class="text-black/80 text-base font-medium leading-relaxed list-none space-y-1">
+                        <li>- Annotation</li>
+                        <li>- Training</li>
+                        <li>- Validation</li>
+                        <li>- Export</li>
+                    </ul>
+                </div>
+                <div class="relative pl-6 border-l-2 border-black">
+                    <div class="mb-4">
+                        <span class="material-symbols-outlined text-4xl text-black">lan</span>
+                    </div>
+                    <h3 class="font-black text-black text-xl mb-3">Offline-First Architecture</h3>
+                    <ul class="text-black/80 text-base font-medium leading-relaxed list-none space-y-1">
+                        <li>- Works without internet</li>
+                        <li>- No cloud lock-in</li>
+                        <li>- Full local ownership</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="bg-black text-white py-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-24">
+                <h2
+                    class="text-5xl md:text-6xl font-medium text-white mb-6 font-display tracking-tight leading-tight text-center">
+                    <span class="text-gray-400">Core</span> <span class="font-bold text-white">Capabilities</span>
+                </h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+                <div
+                    class="bg-[#1a1a1a] p-8 md:p-10 rounded-lg flex flex-col h-full hover:bg-[#222] transition-colors duration-300">
+                    <div class="mb-6">
+                        <h3 class="text-primary font-bold text-2xl mb-4">Dataset Management</h3>
+                        <p class="text-gray-400 leading-relaxed text-sm h-32">
+                            Import local, HuggingFace, or Kaggle datasets. Versioned dataset control and validation
+                            before training.
+                        </p>
+                    </div>
+                </div>
+                <div
+                    class="bg-[#1a1a1a] p-8 md:p-10 rounded-lg flex flex-col h-full hover:bg-[#222] transition-colors duration-300">
+                    <div class="mb-6">
+                        <h3 class="text-primary font-bold text-2xl mb-4">Annotation Studio</h3>
+                        <p class="text-gray-400 leading-relaxed text-sm h-32">
+                            Bounding boxes and segmentation with multiple annotation sets. Export directly to COCO or
+                            YOLO formats.
+                        </p>
+                    </div>
+                </div>
+                <div
+                    class="bg-[#1a1a1a] p-8 md:p-10 rounded-lg flex flex-col h-full hover:bg-[#222] transition-colors duration-300">
+                    <div class="mb-6">
+                        <h3 class="text-primary font-bold text-2xl mb-4">Training Engine</h3>
+                        <p class="text-gray-400 leading-relaxed text-sm h-32">
+                            Config-driven training with automatic checkpointing and native resume support for
+                            interrupted runs.
+                        </p>
+                    </div>
+                </div>
+                <div
+                    class="bg-[#1a1a1a] p-8 md:p-10 rounded-lg flex flex-col h-full hover:bg-[#222] transition-colors duration-300">
+                    <div class="mb-6">
+                        <h3 class="text-primary font-bold text-2xl mb-4">Export & Deployment</h3>
+                        <p class="text-gray-400 leading-relaxed text-sm h-32">
+                            ONNX export, production-ready artifacts, and metadata-verified outputs for reliable
+                            deployment.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="bg-white dark:bg-background-dark py-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-24">
+                <h2
+                    class="text-5xl font-black text-gray-900 dark:text-white mb-6 font-display tracking-tight uppercase italic">
+                    Built for Serious ML Workflows</h2>
+                <p class="text-xl text-gray-500 dark:text-gray-400 font-medium max-w-2xl mx-auto">Designed for ML
+                    engineers who prioritize reproducibility and system responsibility.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <div class="bg-gray-50 dark:bg-surface-dark/30 p-10 border border-gray-100 dark:border-gray-800">
+                    <h3 class="text-primary font-black uppercase text-xs tracking-[0.3em] mb-8">What ML Forge
+                        Guarantees</h3>
+                    <ul class="space-y-4 text-gray-600 dark:text-gray-300 text-lg font-medium">
+                        <li class="flex items-center gap-3"><span
+                                class="material-symbols-outlined text-primary">check_circle</span> Deterministic runs
+                        </li>
+                        <li class="flex items-center gap-3"><span
+                                class="material-symbols-outlined text-primary">check_circle</span> Local data ownership
+                        </li>
+                        <li class="flex items-center gap-3"><span
+                                class="material-symbols-outlined text-primary">check_circle</span> No silent
+                            configuration changes</li>
+                    </ul>
+                </div>
+                <div
+                    class="bg-gray-50 dark:bg-surface-dark/30 p-10 border border-gray-100 dark:border-gray-800 opacity-80">
+                    <h3 class="text-gray-500 font-black uppercase text-xs tracking-[0.3em] mb-8">What ML Forge Does
+                        Not Do</h3>
+                    <ul class="space-y-4 text-gray-500 text-lg font-medium">
+                        <li class="flex items-center gap-3"><span
+                                class="material-symbols-outlined text-gray-400">cancel</span> No automatic cloud sync
+                        </li>
+                        <li class="flex items-center gap-3"><span
+                                class="material-symbols-outlined text-gray-400">cancel</span> No hidden data sharing
+                        </li>
+                        <li class="flex items-center gap-3"><span
+                                class="material-symbols-outlined text-gray-400">cancel</span> No managed hosting</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="bg-black py-40 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-32">
+                <h2
+                    class="text-5xl md:text-7xl font-black text-white mb-6 font-display uppercase italic tracking-tighter text-center">
+                    How It Works</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-white/5 p-10 border border-white/10 hover:border-primary/50 transition-all">
+                    <div class="text-primary font-black text-4xl mb-6">01</div>
+                    <h3 class="text-white font-black uppercase tracking-tighter text-xl mb-4">Create or Import Dataset
+                    </h3>
+                </div>
+                <div class="bg-white/5 p-10 border border-white/10 hover:border-primary/50 transition-all">
+                    <div class="text-primary font-black text-4xl mb-6">02</div>
+                    <h3 class="text-white font-black uppercase tracking-tighter text-xl mb-4">Annotate & Validate</h3>
+                </div>
+                <div class="bg-white/5 p-10 border border-white/10 hover:border-primary/50 transition-all">
+                    <div class="text-primary font-black text-4xl mb-6">03</div>
+                    <h3 class="text-white font-black uppercase tracking-tighter text-xl mb-4">Configure & Train</h3>
+                </div>
+                <div class="bg-white/5 p-10 border border-white/10 hover:border-primary/50 transition-all">
+                    <div class="text-primary font-black text-4xl mb-6">04</div>
+                    <h3 class="text-white font-black uppercase tracking-tighter text-xl mb-4">Export Verified Model</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+    </p>
+    </div>
+    <div class="mt-auto pt-6 border-t border-white/10 flex items-center gap-3 text-xs font-medium text-gray-500">
+        <span class="material-symbols-outlined text-base">lock</span>
+        SOC2 Type II Compliant
+    </div>
+    </div>
+    <!-- <div
+        class="bg-[#1a1a1a] p-8 md:p-10 rounded-lg flex flex-col h-full hover:bg-[#222] transition-colors duration-300">
+        <div class="mb-6">
+            <h3 class="text-primary font-bold text-2xl mb-4">Annotation Studio</h3>
+            <p class="text-gray-400 leading-relaxed text-sm h-32">
+                A collaborative environment for subject matter experts. Human-in-the-loop workflows that feed directly
+                back into model retraining cycles.
+            </p>
+        </div>
+        <div class="mt-auto pt-6 border-t border-white/10 flex items-center gap-3 text-xs font-medium text-gray-500">
+            <span class="material-symbols-outlined text-base">group</span>
+            Real-time collaboration
+        </div>
+    </div> -->
+    </div>
+    <div class="pt-16 flex flex-col md:flex-row gap-12 items-center">
+        <div class="flex-1">
+            <h4 class="text-primary font-black uppercase text-xs tracking-[0.3em] mb-4">The Complete Environment</h4>
+            <p class="text-gray-400 text-lg leading-relaxed">
+                ML Forge provides a unified interface for the entire lifecycle of computer vision models. From raw data
+                ingestion to edge-ready model exports, every step is optimized for local hardware, ensuring maximum
+                speed and complete data privacy.
+            </p>
+        </div>
+        <div class="flex gap-4 w-full md:w-auto">
+            <div class="bg-[#0F0F0F] p-6 border border-white/5 w-40 text-center">
+                <div class="text-primary font-black text-3xl mb-1">100%</div>
+                <div class="text-[9px] text-gray-500 uppercase font-bold tracking-widest">Local Processing</div>
+            </div>
+            <div class="bg-[#0F0F0F] p-6 border border-white/5 w-40 text-center">
+                <div class="text-primary font-black text-3xl mb-1">0ms</div>
+                <div class="text-[9px] text-gray-500 uppercase font-bold tracking-widest">Cloud Latency</div>
+            </div>
+        </div>
+    </div>
+    </div>
+    </section>
+    <section class="bg-white dark:bg-background-dark py-40 overflow-hidden relative">
+        <div
+            class="absolute inset-0 bg-gradient-to-b from-transparent via-gray-50/50 to-transparent dark:from-transparent dark:via-black/20 dark:to-transparent pointer-events-none">
+        </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <div class="max-w-xl">
+                    <div class="text-primary text-[10px] font-black uppercase tracking-[0.4em] mb-6">Security &amp;
+                        Trust</div>
+                    <h2
+                        class="text-5xl lg:text-6xl font-black text-gray-900 dark:text-white mb-8 font-display leading-[1.05]">
+                        Guaranteed <br /><span class="text-primary italic">Reproducibility</span>
+                    </h2>
+                    <p class="text-xl text-gray-600 dark:text-gray-400 leading-relaxed mb-12">
+                        ML Forge uses <span class="font-bold text-gray-900 dark:text-white">Deterministic Hashing</span>
+                        to ensure that every model you train is tied to the exact state of your data and
+                        hyperparameters.
+                    </p>
+                    <div class="grid grid-cols-1 gap-6">
+                        <div
+                            class="group relative p-6 bg-[#0f0f0f] border border-white/10 rounded-lg overflow-hidden transition-all duration-300 hover:border-primary/40 hover:bg-[#151515]">
+                            <div
+                                class="absolute inset-y-0 left-0 w-1 bg-accent-yellow group-hover:bg-primary transition-colors">
+                            </div>
+                            <div class="flex gap-5">
+                                <div
+                                    class="w-12 h-12 bg-accent-yellow/10 rounded-md flex items-center justify-center shrink-0 border border-accent-yellow/20 group-hover:bg-primary/10 group-hover:border-primary/20 transition-all">
+                                    <span
+                                        class="material-symbols-outlined text-accent-yellow group-hover:text-primary transition-colors">fingerprint</span>
+                                </div>
+                                <div>
+                                    <h4
+                                        class="font-mono font-bold text-white uppercase text-xs tracking-widest mb-2 flex items-center gap-2">
+                                        Immutable Snapshots
+                                        <span
+                                            class="text-[9px] px-1.5 py-0.5 rounded bg-white/10 text-gray-400">v2.4.1</span>
+                                    </h4>
+                                    <p class="text-gray-500 text-sm leading-relaxed">Every training run creates a locked
+                                        data snapshot automatically. Rollback to any previous state instantly.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div
+                            class="group relative p-6 bg-[#0f0f0f] border border-white/10 rounded-lg overflow-hidden transition-all duration-300 hover:border-primary/40 hover:bg-[#151515]">
+                            <div class="absolute inset-y-0 left-0 w-1 bg-primary transition-colors"></div>
+                            <div class="flex gap-5">
+                                <div
+                                    class="w-12 h-12 bg-primary/10 rounded-md flex items-center justify-center shrink-0 border border-primary/20">
+                                    <span class="material-symbols-outlined text-primary">verified</span>
+                                </div>
+                                <div>
+                                    <h4
+                                        class="font-mono font-bold text-white uppercase text-xs tracking-widest mb-2 flex items-center gap-2">
+                                        Deterministic Shuffling
+                                    </h4>
+                                    <p class="text-gray-500 text-sm leading-relaxed">Fixed random seeds across all local
+                                        environments. <span
+                                            class="font-mono text-primary/80 bg-primary/10 px-1 text-xs">seed=42</span>
+                                        guarantees identical splits.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative w-full max-w-2xl lg:max-w-none mx-auto lg:ml-auto">
+                    <div
+                        class="absolute -inset-1 bg-gradient-to-r from-primary to-accent-yellow rounded-xl blur opacity-20">
+                    </div>
+                    <div
+                        class="relative bg-[#050505] rounded-xl border border-white/10 shadow-2xl overflow-hidden flex flex-col h-[500px]">
+                        <div
+                            class="flex items-center justify-between px-4 py-2 bg-[#0A0A0A] border-b border-white/5 h-10 shrink-0">
+                            <div class="flex items-center gap-4">
+                                <div class="flex gap-1.5">
+                                    <div class="w-2.5 h-2.5 rounded-full bg-[#333]"></div>
+                                    <div class="w-2.5 h-2.5 rounded-full bg-[#333]"></div>
+                                    <div class="w-2.5 h-2.5 rounded-full bg-[#333]"></div>
+                                </div>
+                                <div class="text-[10px] font-mono text-gray-500 flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-[12px]">terminal</span>
+                                    <span>forge-engine // training-session-09</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="px-2 py-0.5 bg-green-900/20 border border-green-500/20 rounded text-[9px] font-bold text-green-400 uppercase tracking-wider flex items-center gap-1.5">
+                                    <span class="relative flex h-1.5 w-1.5">
+                                        <span
+                                            class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                                        <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-500"></span>
+                                    </span>
+                                    GPU: ACTIVE
+                                </div>
+                                <div class="text-[10px] font-mono text-gray-600">v1.2.0</div>
+                            </div>
+                        </div>
+                        <div class="flex flex-1 overflow-hidden relative dashboard-grid">
+                            <div
+                                class="w-48 border-r border-white/5 bg-[#080808]/90 backdrop-blur-sm p-4 flex flex-col gap-6 z-10">
+                                <div>
+                                    <div class="text-[9px] uppercase tracking-widest text-gray-500 font-bold mb-3">
+                                        Checkpoints</div>
+                                    <div class="space-y-2">
+                                        <div
+                                            class="flex items-center justify-between text-[10px] font-mono text-gray-400 p-2 rounded bg-white/5 border border-primary/20 border-l-2 border-l-primary">
+                                            <span>Epoch 42</span>
+                                            <span class="text-primary">Best</span>
+                                        </div>
+                                        <div
+                                            class="flex items-center justify-between text-[10px] font-mono text-gray-600 p-2 rounded hover:bg-white/5 transition-colors cursor-pointer">
+                                            <span>Epoch 41</span>
+                                            <span>0.982</span>
+                                        </div>
+                                        <div
+                                            class="flex items-center justify-between text-[10px] font-mono text-gray-600 p-2 rounded hover:bg-white/5 transition-colors cursor-pointer">
+                                            <span>Epoch 40</span>
+                                            <span>0.975</span>
+                                        </div>
+                                        <div
+                                            class="flex items-center justify-between text-[10px] font-mono text-gray-600 p-2 rounded hover:bg-white/5 transition-colors cursor-pointer">
+                                            <span>Epoch 39</span>
+                                            <span>0.968</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-auto">
+                                    <div class="text-[9px] uppercase tracking-widest text-gray-500 font-bold mb-3">Hash
+                                        Validation</div>
+                                    <div class="relative h-32 w-full">
+                                        <div class="absolute left-1.5 top-0 bottom-0 w-px bg-white/10"></div>
+                                        <div class="space-y-4 relative">
+                                            <div class="flex gap-3 items-center">
+                                                <div
+                                                    class="w-3 h-3 rounded-full bg-primary border-2 border-[#080808] z-10">
+                                                </div>
+                                                <div class="flex flex-col">
+                                                    <span class="text-[9px] text-white font-bold">Data Hash</span>
+                                                    <span
+                                                        class="text-[8px] font-mono text-primary truncate w-24">0x7f...a2</span>
+                                                </div>
+                                            </div>
+                                            <div class="flex gap-3 items-center">
+                                                <div
+                                                    class="w-3 h-3 rounded-full bg-accent-yellow border-2 border-[#080808] z-10">
+                                                </div>
+                                                <div class="flex flex-col">
+                                                    <span class="text-[9px] text-white font-bold">Config Hash</span>
+                                                    <span
+                                                        class="text-[8px] font-mono text-accent-yellow truncate w-24">0x3b...9c</span>
+                                                </div>
+                                            </div>
+                                            <div class="flex gap-3 items-center opacity-50">
+                                                <div
+                                                    class="w-3 h-3 rounded-full bg-gray-600 border-2 border-[#080808] z-10">
+                                                </div>
+                                                <div class="flex flex-col">
+                                                    <span class="text-[9px] text-gray-400 font-bold">Weight Hash</span>
+                                                    <span
+                                                        class="text-[8px] font-mono text-gray-500 truncate w-24">Pending...</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex-1 flex flex-col relative overflow-hidden">
+                                <div class="absolute inset-0 opacity-10 pointer-events-none">
+                                    <svg class="w-full h-full" preserveAspectRatio="none">
+                                        <line stroke="#66FF99" stroke-width="0.5" x1="0" x2="100%" y1="20%" y2="40%">
+                                        </line>
+                                        <line stroke="#FFFF33" stroke-width="0.5" x1="0" x2="100%" y1="80%" y2="30%">
+                                        </line>
+                                        <line stroke="#ffffff" stroke-width="0.2" x1="10%" x2="10%" y1="0" y2="100%">
+                                        </line>
+                                        <line stroke="#ffffff" stroke-width="0.2" x1="30%" x2="30%" y1="0" y2="100%">
+                                        </line>
+                                        <line stroke="#ffffff" stroke-width="0.2" x1="50%" x2="50%" y1="0" y2="100%">
+                                        </line>
+                                        <line stroke="#ffffff" stroke-width="0.2" x1="70%" x2="70%" y1="0" y2="100%">
+                                        </line>
+                                        <line stroke="#ffffff" stroke-width="0.2" x1="90%" x2="90%" y1="0" y2="100%">
+                                        </line>
+                                    </svg>
+                                </div>
+                                <div class="p-4 flex justify-between items-start z-10">
+                                    <div>
+                                        <h3 class="text-white font-mono font-bold text-sm tracking-tight mb-1">Live
+                                            Training Metrics</h3>
+                                        <p class="text-[10px] text-gray-500 font-mono">ResNet-50 // Batch Size: 64 //
+                                            LR: 0.001</p>
+                                    </div>
+                                    <div class="flex gap-4">
+                                        <div class="text-right">
+                                            <div class="text-[9px] uppercase text-gray-500 font-bold mb-0.5">Loss</div>
+                                            <div class="text-lg font-mono font-bold text-accent-yellow">0.0421</div>
+                                        </div>
+                                        <div class="text-right">
+                                            <div class="text-[9px] uppercase text-gray-500 font-bold mb-0.5">Accuracy
+                                            </div>
+                                            <div class="text-lg font-mono font-bold text-primary">98.4%</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex-1 p-4 pt-0 relative z-10">
+                                    <div
+                                        class="w-full h-full border border-white/5 bg-[#000]/20 rounded-lg relative overflow-hidden">
+                                        <div
+                                            class="absolute inset-0 flex flex-col justify-between p-4 pointer-events-none">
+                                            <div class="w-full h-px bg-white/5"></div>
+                                            <div class="w-full h-px bg-white/5"></div>
+                                            <div class="w-full h-px bg-white/5"></div>
+                                            <div class="w-full h-px bg-white/5"></div>
+                                            <div class="w-full h-px bg-white/5"></div>
+                                        </div>
+                                        <svg class="absolute inset-0 w-full h-full p-4 overflow-visible"
+                                            preserveAspectRatio="none" viewBox="0 0 400 200">
+                                            <path class="svg-chart-line"
+                                                d="M0,150 Q20,140 40,100 T80,80 T120,90 T160,60 T200,50 T240,40 T280,45 T320,30 T360,35 T400,20"
+                                                fill="none" stroke="#FFFF33" stroke-opacity="0.6" stroke-width="2">
+                                            </path>
+                                            <path class="svg-chart-line"
+                                                d="M0,180 Q20,160 40,140 T80,110 T120,90 T160,50 T200,40 T240,30 T280,25 T320,20 T360,15 T400,10"
+                                                fill="none" stroke="#66FF99" stroke-width="2"></path>
+                                            <path
+                                                d="M0,180 Q20,160 40,140 T80,110 T120,90 T160,50 T200,40 T240,30 T280,25 T320,20 T360,15 T400,10 V200 H0 Z"
+                                                fill="url(#gradientPrimary)" opacity="0.1"></path>
+                                            <defs>
+                                                <linearGradient id="gradientPrimary" x1="0" x2="0" y1="0" y2="1">
+                                                    <stop offset="0%" stop-color="#66FF99"></stop>
+                                                    <stop offset="100%" stop-color="#66FF99" stop-opacity="0"></stop>
+                                                </linearGradient>
+                                            </defs>
+                                            <circle cx="400" cy="10" fill="#66FF99" r="3">
+                                                <animate attributeName="r" begin="0s" dur="1.5s"
+                                                    repeatCount="indefinite" values="3;6;3"></animate>
+                                                <animate attributeName="opacity" begin="0s" dur="1.5s"
+                                                    repeatCount="indefinite" values="1;0;1"></animate>
+                                            </circle>
+                                        </svg>
+                                        <div
+                                            class="absolute right-4 top-0 bottom-0 w-px bg-white/20 border-r border-dashed border-white/40">
+                                        </div>
+                                        <div
+                                            class="absolute right-4 top-[10px] transform translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-primary rounded-full shadow-[0_0_10px_rgba(102,255,153,0.8)]">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="h-8 border-t border-white/5 bg-[#080808] flex items-center px-4 gap-2 z-10">
+                                    <div class="text-[8px] font-mono text-gray-500">00:00</div>
+                                    <div class="flex-1 h-1 bg-white/10 rounded-full relative overflow-hidden">
+                                        <div class="absolute left-0 top-0 bottom-0 w-[85%] bg-primary"></div>
+                                    </div>
+                                    <div class="text-[8px] font-mono text-gray-500">04:20</div>
+                                    <div class="flex items-center gap-1 ml-2">
+                                        <div class="w-1 h-2 bg-gray-600"></div>
+                                        <div class="w-1 h-2 bg-gray-600"></div>
+                                        <div class="w-1 h-2 bg-gray-600"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="absolute inset-0 -z-10 rounded-xl overflow-hidden pointer-events-none">
+                            <div class="absolute inset-0 bg-transparent border border-primary/20 rounded-xl"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="bg-white dark:bg-background-dark py-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-24">
+                <h2
+                    class="text-5xl font-black text-gray-900 dark:text-white mb-6 font-display tracking-tight uppercase italic">
+                    Trusted by Vision Leaders</h2>
+                <p class="text-xl text-gray-500 dark:text-gray-400 font-medium max-w-2xl mx-auto">Engineering teams
+                    focused on absolute traceability and industrial scale.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div
+                    class="bg-gray-50 dark:bg-surface-dark/30 p-10 flex flex-col h-full border border-gray-100 dark:border-gray-800">
+                    <h4 class="text-primary font-black uppercase text-xs tracking-[0.3em] mb-8">Manufacturing</h4>
+                    <p class="text-gray-600 dark:text-gray-300 mb-10 text-lg leading-relaxed italic">
+                        "We went from 'it works on my machine' to every training run being 100% reproducible. ML Forge
+                        handles the data versioning seamlessly across our local development pods."
+                    </p>
+                    <div class="mt-auto flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-800"></div>
+                        <div>
+                            <div class="font-black text-black dark:text-white text-sm">Marcus Thorne</div>
+                            <div class="text-[10px] text-gray-500 uppercase font-bold tracking-widest">Lead ML Engineer,
+                                GE Precision</div>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="bg-gray-50 dark:bg-surface-dark/30 p-10 flex flex-col h-full border border-gray-100 dark:border-gray-800">
+                    <h4 class="text-primary font-black uppercase text-xs tracking-[0.3em] mb-8">Robotics</h4>
+                    <p class="text-gray-600 dark:text-gray-300 mb-10 text-lg leading-relaxed italic">
+                        "With ML Forge, every export is tied to the exact dataset and weights used. In robotics,
+                        traceability isn't just a feature—it's a strict safety requirement."
+                    </p>
+                    <div class="mt-auto flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-800"></div>
+                        <div>
+                            <div class="font-black text-black dark:text-white text-sm">Elena Rodriguez</div>
+                            <div class="text-[10px] text-gray-500 uppercase font-bold tracking-widest">CTO, Kinetic
+                                Systems</div>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="bg-gray-50 dark:bg-surface-dark/30 p-10 flex flex-col h-full border border-gray-100 dark:border-gray-800">
+                    <h4 class="text-primary font-black uppercase text-xs tracking-[0.3em] mb-8">Security</h4>
+                    <p class="text-gray-600 dark:text-gray-300 mb-10 text-lg leading-relaxed italic">
+                        "We're not trusting a black box—every step is audited locally. The performance growth we've seen
+                        since moving our vision pipeline to ML Forge is unmatched."
+                    </p>
+                    <div class="mt-auto flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-800"></div>
+                        <div>
+                            <div class="font-black text-black dark:text-white text-sm">David Chen</div>
+                            <div class="text-[10px] text-gray-500 uppercase font-bold tracking-widest">VP AI, Sentinel
+                                Defense</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="bg-black py-40 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-32">
+                <h2
+                    class="text-5xl md:text-7xl font-black text-white mb-6 font-display uppercase italic tracking-tighter">
+                    Engineered for the Edge</h2>
+                <p class="text-gray-400 text-xl max-w-3xl mx-auto font-medium">The local-first architecture isn't just
+                    about privacy—it's about removing the architectural bottlenecks of the cloud.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-white/5 p-10 border border-white/10 hover:border-primary/50 transition-all">
+                    <div class="text-primary font-black text-4xl mb-6">01</div>
+                    <h3 class="text-white font-black uppercase tracking-tighter text-xl mb-4">Zero Data Transfer</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed">Stop waiting for multi-gigabyte uploads. Training
+                        starts instantly on your local hardware the moment your dataset is ready.</p>
+                </div>
+                <div class="bg-white/5 p-10 border border-white/10 hover:border-primary/50 transition-all">
+                    <div class="text-primary font-black text-4xl mb-6">02</div>
+                    <h3 class="text-white font-black uppercase tracking-tighter text-xl mb-4">Native Hardware</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed">Direct access to local GPU kernels. Optimized for
+                        modern workstations with native acceleration for all major silicon architectures.</p>
+                </div>
+                <div class="bg-white/5 p-10 border border-white/10 hover:border-primary/50 transition-all">
+                    <div class="text-primary font-black text-4xl mb-6">03</div>
+                    <h3 class="text-white font-black uppercase tracking-tighter text-xl mb-4">Edge Native</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed">One-click optimization for deployment. Compile
+                        models specifically for your target edge hardware with pre-built toolchains.</p>
+                </div>
+                <div class="bg-white/5 p-10 border border-white/10 hover:border-primary/50 transition-all">
+                    <div class="text-primary font-black text-4xl mb-6">04</div>
+                    <h3 class="text-white font-black uppercase tracking-tighter text-xl mb-4">Air-Gapped Ready</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed">Built for secure environments. Operate entirely
+                        without an internet connection for sensitive government or industrial projects.</p>
+                </div>
+            </div>
+            <div
+                class="mt-20 flex flex-col lg:flex-row items-center gap-12 bg-subtle-dark p-12 rounded-sm border border-white/5">
+                <div class="flex-1">
+                    <div class="text-accent-yellow text-[10px] font-black uppercase tracking-[0.4em] mb-4">Performance
+                        Comparison</div>
+                    <h4 class="text-white text-3xl font-black uppercase tracking-tighter mb-6 italic">Local Pipeline vs.
+                        Cloud Friction</h4>
+                    <div class="space-y-6 max-w-lg">
+                        <div class="space-y-2">
+                            <div
+                                class="flex justify-between text-[10px] font-bold text-gray-500 uppercase tracking-widest">
+                                <span>Data Pre-processing (100k images)</span>
+                                <span class="text-primary">8.2s (Local)</span>
+                            </div>
+                            <div class="h-1 bg-white/10 w-full rounded-full overflow-hidden">
+                                <div class="h-full bg-primary w-[15%]"></div>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <div
+                                class="flex justify-between text-[10px] font-bold text-gray-500 uppercase tracking-widest">
+                                <span>Model Training Initialization</span>
+                                <span class="text-primary">0.4s (Local)</span>
+                            </div>
+                            <div class="h-1 bg-white/10 w-full rounded-full overflow-hidden">
+                                <div class="h-full bg-primary w-[5%]"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="w-full lg:w-1/3 aspect-square bg-white/5 border border-white/10 p-8 flex flex-col justify-center text-center">
+                    <div class="text-7xl font-black text-white mb-2 leading-none">12x</div>
+                    <div class="text-primary font-black uppercase text-xs tracking-[0.3em] mb-6">Faster Iteration Loops
+                    </div>
+                    <p class="text-gray-500 text-xs leading-relaxed uppercase tracking-widest font-bold italic">
+                        Benchmarked against industry leading cloud-based vision platforms.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="py-32 bg-primary">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-6xl md:text-[100px] font-black text-black mb-16 tracking-tighter leading-[0.85] uppercase">
+                Build, Train, Ship <br />Vision AI. <br />
+                <span class="italic opacity-30 text-6xl">Fully Local.</span>
+            </h2>
+            <div class="flex flex-col md:flex-row justify-center gap-6">
+                <button
+                    class="bg-black text-white px-12 py-5 font-black text-xl uppercase tracking-widest border border-black hover:bg-transparent hover:text-black transition-colors">
+                    Download ml forge
+                </button>
+                <button
+                    class="bg-transparent border-2 border-black text-black px-12 py-5 font-black text-xl uppercase tracking-widest hover:bg-black hover:text-white transition-colors">
+                    View Documentation
+                </button>
+            </div>
+        </div>
+    </section>
+    <footer class="bg-background-dark text-white pt-32 pb-16 text-sm border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-16 mb-24">
+                <div class="col-span-2">
+                    <div class="flex items-center gap-2 text-2xl font-black mb-8 uppercase italic">
+                        <span class="material-symbols-outlined text-primary">token</span>
+                        ML Forge
+                    </div>
+                    <p class="text-gray-500 max-w-sm leading-relaxed text-base font-medium">
+                        The professional desktop environment for Vision AI teams. Local-first, reproducible, and
+                        industrial-grade.
+                    </p>
+                    <div class="flex gap-4 mt-8">
+                        <div
+                            class="w-8 h-8 flex items-center justify-center border border-white/10 hover:border-primary cursor-pointer transition-colors">
+                            <span class="material-symbols-outlined text-gray-500 text-lg">share</span>
+                        </div>
+                        <div
+                            class="w-8 h-8 flex items-center justify-center border border-white/10 hover:border-primary cursor-pointer transition-colors">
+                            <span class="material-symbols-outlined text-gray-500 text-lg">public</span>
+                        </div>
+                        <div
+                            class="w-8 h-8 flex items-center justify-center border border-white/10 hover:border-primary cursor-pointer transition-colors">
+                            <span class="material-symbols-outlined text-gray-500 text-lg">code</span>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-black mb-8 text-gray-600 uppercase text-[10px] tracking-[0.3em]">Platform</h4>
+                    <ul class="space-y-4 text-gray-400 font-bold text-xs uppercase tracking-widest">
+                        <li><a class="hover:text-primary transition-colors" href="#">Dataset Manager</a></li>
+                        <li><a class="hover:text-primary transition-colors" href="#">Model Zoo</a></li>
+                        <li><a class="hover:text-primary transition-colors" href="#">Labelling IDE</a></li>
+                        <li><a class="hover:text-primary transition-colors" href="#">Local Deployment</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-black mb-8 text-gray-600 uppercase text-[10px] tracking-[0.3em]">Solutions</h4>
+                    <ul class="space-y-4 text-gray-400 font-bold text-xs uppercase tracking-widest">
+                        <li><a class="hover:text-primary transition-colors" href="#">Manufacturing</a></li>
+                        <li><a class="hover:text-primary transition-colors" href="#">Robotics</a></li>
+                        <li><a class="hover:text-primary transition-colors" href="#">Healthcare</a></li>
+                        <li><a class="hover:text-primary transition-colors" href="#">Security</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-black mb-8 text-gray-600 uppercase text-[10px] tracking-[0.3em]">Company</h4>
+                    <ul class="space-y-4 text-gray-400 font-bold text-xs uppercase tracking-widest">
+                        <li><a class="hover:text-primary transition-colors" href="#">About Us</a></li>
+                        <li><a class="hover:text-primary transition-colors" href="#">Careers</a></li>
+                        <li><a class="hover:text-primary transition-colors" href="#">Legal</a></li>
+                        <li><a class="hover:text-primary transition-colors" href="#">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="flex flex-col md:flex-row justify-between items-center pt-16 border-t border-white/5">
+                <div class="text-[10px] text-gray-600 font-black uppercase tracking-[0.3em]">© 2024 ML FORGE INC. ALL
+                    RIGHTS RESERVED.</div>
+                <div class="flex items-center gap-12 mt-8 md:mt-0">
+                    <div class="flex items-center gap-6">
+                        <span class="text-white font-black uppercase text-[10px] tracking-[0.3em]">Ready to
+                            build?</span>
+                        <a class="flex items-center gap-3 text-primary font-black uppercase text-[10px] tracking-[0.3em] hover:opacity-80 transition-opacity"
+                            href="#">
+                            Download for Desktop
+                            <span class="material-symbols-outlined text-sm font-black">arrow_forward</span>
+                        </a>
+                    </div>
+                    <div class="flex gap-10 text-[10px] text-gray-600 font-black uppercase tracking-[0.3em]">
+                        <a class="hover:text-white transition-colors" href="#">Privacy Policy</a>
+                        <a class="hover:text-white transition-colors" href="#">Terms of Service</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>ML FORGE - Documentation Hub</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#00FF99", // Mint green from screenshot
+                        "primary-dark": "#00CC7A",
+                        "accent-blue": "#4F46E5", // Blue for arrows
+                        "background-light": "#F8F9FA", // Light gray background
+                        "background-dark": "#111827", // Dark mode background
+                        "surface-light": "#FFFFFF",
+                        "surface-dark": "#1F2937",
+                        "border-light": "#E5E7EB",
+                        "border-dark": "#374151",
+                        "text-main-light": "#111827",
+                        "text-main-dark": "#F9FAFB",
+                        "text-sub-light": "#4B5563",
+                        "text-sub-dark": "#9CA3AF",
+                    },
+                    fontFamily: {
+                        display: ["Inter", "sans-serif"],
+                        sans: ["Inter", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.25rem",
+                    },
+                },
+            },
+        };
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: #CBD5E1;
+            border-radius: 4px;
+        }
+
+        .dark ::-webkit-scrollbar-thumb {
+            background-color: #4B5563;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark text-text-main-light dark:text-text-main-dark transition-colors duration-200">
+    <div class="bg-black text-white text-sm py-2 px-4 flex justify-between items-center relative z-50">
+        <div class="flex-grow text-center">
+            <a class="hover:underline flex items-center justify-center gap-1 font-medium" href="#">
+                Release notes for ML FORGE 2.0 are available <span class="material-icons text-sm">open_in_new</span>
+            </a>
+        </div>
+        <button class="text-gray-400 hover:text-white absolute right-4">
+            <span class="material-icons text-sm">close</span>
+        </button>
+    </div>
+    <nav
+        class="bg-surface-light dark:bg-surface-dark border-b border-border-light dark:border-border-dark sticky top-0 z-40">
+        <div class="max-w-[1440px] mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-8">
+                <a class="flex items-center gap-2 group" href="#">
+                    <div
+                        class="w-8 h-8 bg-primary rounded-sm flex items-center justify-center text-black font-bold text-xs group-hover:bg-primary-dark transition-colors">
+                        <svg fill="none" height="20" stroke="currentColor" stroke-linecap="round"
+                            stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" width="20">
+                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                        </svg>
+                    </div>
+                    <span class="font-bold text-xl tracking-tight text-black dark:text-white">ML FORGE</span>
+                </a>
+            </div>
+            <div
+                class="hidden md:flex items-center gap-8 text-sm font-medium text-text-sub-light dark:text-text-sub-dark">
+                <a class="hover:text-black dark:hover:text-white transition-colors" href="landing_page.html">Home</a>
+                <a class="hover:text-black dark:hover:text-white transition-colors"
+                    href="agentic_page.html">Protocols</a>
+                <a class="hover:text-black dark:hover:text-white transition-colors text-primary"
+                    href="docs_page.html">Documentation</a>
+                <a class="hover:text-black dark:hover:text-white transition-colors"
+                    href="download_page.html">Download</a>
+                <a class="hover:text-black dark:hover:text-white transition-colors" href="contact_page.html">Contact</a>
+            </div>
+            <button class="md:hidden text-text-main-light dark:text-text-main-dark">
+                <span class="material-icons">menu</span>
+            </button>
+        </div>
+        <div class="border-t border-border-light dark:border-border-dark hidden md:block">
+            <div
+                class="max-w-[1440px] mx-auto px-6 h-12 flex items-center gap-8 text-sm font-semibold text-text-main-light dark:text-text-main-dark overflow-x-auto whitespace-nowrap scrollbar-hide">
+                <a class="hover:text-primary transition-colors" href="vector_db_page.html#get-started">Get started</a>
+                <a class="hover:text-primary transition-colors" href="vector_db_page.html#dataset-manager">Dataset
+                    Manager</a>
+                <a class="hover:text-primary transition-colors" href="vector_db_page.html#annotation-studio">Annotation
+                    Studio</a>
+                <a class="hover:text-primary transition-colors" href="vector_db_page.html#model-zoo">Model Zoo</a>
+                <a class="hover:text-primary transition-colors" href="vector_db_page.html#training-logs">Training
+                    Logs</a>
+                <a class="hover:text-primary transition-colors" href="vector_db_page.html#training-runs">Training &
+                    Runs</a>
+                <a class="hover:text-primary transition-colors"
+                    href="vector_db_page.html#evaluation-benchmarks">Evaluation & Benchmarks</a>
+                <a class="hover:text-primary transition-colors" href="vector_db_page.html#export-deployment">Export &
+                    Deployment</a>
+                <a class="hover:text-primary transition-colors" href="vector_db_page.html#inference">Inference</a>
+                <a class="hover:text-primary transition-colors" href="vector_db_page.html#benchmark">Benchmark</a>
+                <a class="hover:text-primary transition-colors" href="vector_db_page.html#ide-reference">IDE
+                    Reference</a>
+            </div>
+        </div>
+    </nav>
+    <main class="max-w-[1440px] mx-auto px-6 py-12 md:py-16">
+        <div class="mb-12 md:mb-16">
+            <div class="flex gap-6">
+                <div class="w-1.5 self-stretch bg-primary shrink-0"></div>
+                <div>
+                    <h1
+                        class="text-3xl md:text-5xl font-bold text-text-main-light dark:text-text-main-dark mb-4 tracking-tight">
+                        Welcome to ML FORGE documentation
+                    </h1>
+                    <p class="text-lg text-text-sub-light dark:text-text-sub-dark max-w-3xl leading-relaxed">
+                        Find all the information you need to succeed with ML FORGE, in a style that suits you best.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="docs-grid">
+            <!-- Get Started -->
+            <a class="group p-8 bg-white dark:bg-slate-900 border border-border-light dark:border-border-dark rounded-xl hover:border-primary transition-all hover:shadow-2xl flex flex-col h-full"
+                href="vector_db_page.html#get-started">
+                <div class="flex justify-between items-start mb-6">
+                    <h3 class="text-xl font-bold text-text-main-light dark:text-text-main-dark">Get Started</h3>
+                    <span
+                        class="material-icons text-primary group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                </div>
+                <p class="text-[15px] leading-relaxed text-text-sub-light dark:text-text-sub-dark">
+                    Install ML FORGE, understand the workspace, and run your first Vision AI pipeline.
+                </p>
+            </a>
+
+            <!-- Dataset Manager -->
+            <a class="group p-8 bg-white dark:bg-slate-900 border border-border-light dark:border-border-dark rounded-xl hover:border-primary transition-all hover:shadow-2xl flex flex-col h-full"
+                href="vector_db_page.html#dataset-manager">
+                <div class="flex justify-between items-start mb-6">
+                    <h3 class="text-xl font-bold text-text-main-light dark:text-text-main-dark">Dataset Manager</h3>
+                    <span
+                        class="material-icons text-primary group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                </div>
+                <p class="text-[15px] leading-relaxed text-text-sub-light dark:text-text-sub-dark">
+                    Import, organize, version, and snapshot image and video datasets with explicit metadata.
+                </p>
+            </a>
+
+            <!-- Annotation Studio -->
+            <a class="group p-8 bg-white dark:bg-slate-900 border border-border-light dark:border-border-dark rounded-xl hover:border-primary transition-all hover:shadow-2xl flex flex-col h-full"
+                href="vector_db_page.html#annotation-studio">
+                <div class="flex justify-between items-start mb-6">
+                    <h3 class="text-xl font-bold text-text-main-light dark:text-text-main-dark">Annotation Studio</h3>
+                    <span
+                        class="material-icons text-primary group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                </div>
+                <p class="text-[15px] leading-relaxed text-text-sub-light dark:text-text-sub-dark">
+                    Label and review vision data with review-gated changes and full history.
+                </p>
+            </a>
+
+            <!-- Model Zoo -->
+            <a class="group p-8 bg-white dark:bg-slate-900 border border-border-light dark:border-border-dark rounded-xl hover:border-primary transition-all hover:shadow-2xl flex flex-col h-full"
+                href="vector_db_page.html#model-zoo">
+                <div class="flex justify-between items-start mb-6">
+                    <h3 class="text-xl font-bold text-text-main-light dark:text-text-main-dark">Model Zoo</h3>
+                    <span
+                        class="material-icons text-primary group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                </div>
+                <p class="text-[15px] leading-relaxed text-text-sub-light dark:text-text-sub-dark">
+                    Browse supported model architectures, backbones, tasks, and export-ready presets.
+                </p>
+            </a>
+
+            <!-- Training Logs -->
+            <a class="group p-8 bg-white dark:bg-slate-900 border border-border-light dark:border-border-dark rounded-xl hover:border-primary transition-all hover:shadow-2xl flex flex-col h-full"
+                href="vector_db_page.html#training-logs">
+                <div class="flex justify-between items-start mb-6">
+                    <h3 class="text-xl font-bold text-text-main-light dark:text-text-main-dark">Training Logs</h3>
+                    <span
+                        class="material-icons text-primary group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                </div>
+                <p class="text-[15px] leading-relaxed text-text-sub-light dark:text-text-sub-dark">
+                    Real-time, immutable training logs for debugging, auditing, and reproducible experimentation.
+                </p>
+            </a>
+
+            <!-- Training & Runs -->
+            <a class="group p-8 bg-white dark:bg-slate-900 border border-border-light dark:border-border-dark rounded-xl hover:border-primary transition-all hover:shadow-2xl flex flex-col h-full"
+                href="vector_db_page.html#training-runs">
+                <div class="flex justify-between items-start mb-6">
+                    <h3 class="text-xl font-bold text-text-main-light dark:text-text-main-dark">Training & Runs</h3>
+                    <span
+                        class="material-icons text-primary group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                </div>
+                <p class="text-[15px] leading-relaxed text-text-sub-light dark:text-text-sub-dark">
+                    Run local training with explicit configs, tracked metrics, and immutable artifacts.
+                </p>
+            </a>
+
+            <!-- Evaluation & Benchmarks -->
+            <a class="group p-8 bg-white dark:bg-slate-900 border border-border-light dark:border-border-dark rounded-xl hover:border-primary transition-all hover:shadow-2xl flex flex-col h-full"
+                href="vector_db_page.html#evaluation-benchmarks">
+                <div class="flex justify-between items-start mb-6">
+                    <h3 class="text-xl font-bold text-text-main-light dark:text-text-main-dark">Evaluation & Benchmarks
+                    </h3>
+                    <span
+                        class="material-icons text-primary group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                </div>
+                <p class="text-[15px] leading-relaxed text-text-sub-light dark:text-text-sub-dark">
+                    Compare runs, metrics, and models tied directly to the dataset and config that produced them.
+                </p>
+            </a>
+
+            <!-- Export & Deployment -->
+            <a class="group p-8 bg-white dark:bg-slate-900 border border-border-light dark:border-border-dark rounded-xl hover:border-primary transition-all hover:shadow-2xl flex flex-col h-full"
+                href="vector_db_page.html#export-deployment">
+                <div class="flex justify-between items-start mb-6">
+                    <h3 class="text-xl font-bold text-text-main-light dark:text-text-main-dark">Export & Deployment</h3>
+                    <span
+                        class="material-icons text-primary group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                </div>
+                <p class="text-[15px] leading-relaxed text-text-sub-light dark:text-text-sub-dark">
+                    Export models with configs and metrics for edge, on-prem, or offline deployment.
+                </p>
+            </a>
+
+            <!-- Inference -->
+            <a class="group p-8 bg-white dark:bg-slate-900 border border-border-light dark:border-border-dark rounded-xl hover:border-primary transition-all hover:shadow-2xl flex flex-col h-full"
+                href="vector_db_page.html#inference">
+                <div class="flex justify-between items-start mb-6">
+                    <h3 class="text-xl font-bold text-text-main-light dark:text-text-main-dark">Inference</h3>
+                    <span
+                        class="material-icons text-primary group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                </div>
+                <p class="text-[15px] leading-relaxed text-text-sub-light dark:text-text-sub-dark">
+                    Validate models on real-world images, batches, or streams using exported artifacts.
+                </p>
+            </a>
+
+            <!-- Benchmark -->
+            <a class="group p-8 bg-white dark:bg-slate-900 border border-border-light dark:border-border-dark rounded-xl hover:border-primary transition-all hover:shadow-2xl flex flex-col h-full"
+                href="vector_db_page.html#benchmark">
+                <div class="flex justify-between items-start mb-6">
+                    <h3 class="text-xl font-bold text-text-main-light dark:text-text-main-dark">Benchmark</h3>
+                    <span
+                        class="material-icons text-primary group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                </div>
+                <p class="text-[15px] leading-relaxed text-text-sub-light dark:text-text-sub-dark">
+                    Compare models and runs with fixed datasets and deterministic metrics.
+                </p>
+            </a>
+
+            <!-- IDE Reference -->
+            <a class="group p-8 bg-white dark:bg-slate-900 border border-border-light dark:border-border-dark rounded-xl hover:border-primary transition-all hover:shadow-2xl flex flex-col h-full"
+                href="vector_db_page.html#ide-reference">
+                <div class="flex justify-between items-start mb-6">
+                    <h3 class="text-xl font-bold text-text-main-light dark:text-text-main-dark">IDE Reference</h3>
+                    <span
+                        class="material-icons text-primary group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                </div>
+                <p class="text-[15px] leading-relaxed text-text-sub-light dark:text-text-sub-dark">
+                    Detailed reference for ML FORGE UI panels, controls, and workflows.
+                </p>
+            </a>
+            <!-- Training Logs -->
+            <a class="group p-8 bg-white dark:bg-slate-900 border border-border-light dark:border-border-dark rounded-xl hover:border-primary transition-all hover:shadow-2xl flex flex-col h-full"
+                href="#" onclick="updateContent('training-logs'); return false;">
+                <div class="flex justify-between items-start mb-6">
+                    <h3 class="text-xl font-bold text-text-main-light dark:text-text-main-dark">Training Logs</h3>
+                    <span
+                        class="material-icons text-primary group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                </div>
+                <p class="text-[15px] leading-relaxed text-text-sub-light dark:text-text-sub-dark">
+                    Real-time, immutable training logs for debugging, auditing, and reproducible experimentation.
+                </p>
+            </a>
+        </div>
+        <div
+            class="bg-surface-light dark:bg-surface-dark rounded-lg p-6 border border-border-light dark:border-border-dark flex flex-col md:flex-row items-center justify-start gap-4 mt-8">
+            <span class="font-bold text-text-main-light dark:text-text-main-dark">Looking for documentation from earlier
+                ML FORGE builds?</span>
+            <a class="flex items-center gap-1 text-text-sub-light dark:text-text-sub-dark hover:text-black dark:hover:text-white underline decoration-1 underline-offset-4 transition-colors"
+                href="#">
+                Access legacy build guides
+                <span class="material-icons text-sm">arrow_forward</span>
+            </a>
+        </div>
+    </main>
+    <footer
+        class="bg-surface-light dark:bg-surface-dark border-t border-border-light dark:border-border-dark pt-8 pb-4">
+        <div class="max-w-[1440px] mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+                <div class="flex gap-6 text-sm font-medium text-text-sub-light dark:text-text-sub-dark">
+                    <a class="hover:text-black dark:hover:text-white" href="#">Legal</a>
+                    <a class="hover:text-black dark:hover:text-white" href="#">Privacy</a>
+                    <a class="hover:text-black dark:hover:text-white" href="#">Trust</a>
+                    <a class="hover:text-black dark:hover:text-white" href="#">Status</a>
+                </div>
+                <div class="relative">
+                    <button
+                        class="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 px-4 py-2 rounded text-sm font-medium text-text-main-light dark:text-text-main-dark hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                        <img alt="USA Flag" class="w-5 h-auto rounded-sm"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAGz6tr3akEiQ2C5bDqSsndt9XHWkYMG1a60H4VH5NrjLYi4-5LhPGSMKsAGfMWL6HMrrYWET98B44nuI3R2A09EMcwoY8DpzVAA3VssH76PRUYMqNaZrm2W5dQs2qE7vspPkHFuE8irKbjbkO6MvDGgnY8VNVi-mpDcxnle7GaB2CmayhjQ2NFKVITAcW992K2h8GE86tzot7_RLZcZJ5PXLi2xbM18OZUWXAu3rwZJmEK2ru09TN9GROyBd1HEFA7qLj8enD_waI" />
+                        English
+                        <span class="material-icons text-sm">expand_more</span>
+                    </button>
+                </div>
+            </div>
+            <div
+                class="bg-black text-white px-4 py-3 flex flex-col md:flex-row items-center justify-between gap-4 rounded-sm">
+                <div class="text-xs text-gray-400">
+                    © 2026 ML FORGE, Inc.
+                </div>
+                <div class="flex h-4 items-stretch gap-[2px] opacity-90">
+                    <div class="w-4 bg-gray-600"></div>
+                    <div class="w-4 bg-gray-400"></div>
+                    <div class="w-4 bg-white"></div>
+                    <div class="w-2 bg-[#FFFF00]"></div>
+                    <div class="w-2 bg-[#90EE90]"></div>
+                    <div class="w-2 bg-primary"></div>
+                    <div class="w-2 bg-[#4682B4]"></div>
+                    <div class="w-2 bg-[#00BFFF]"></div>
+                    <div class="w-3 bg-[#4169E1]"></div>
+                    <div class="w-3 bg-[#8A2BE2]"></div>
+                    <div class="w-3 bg-[#9370DB]"></div>
+                    <div class="w-3 bg-[#87CEEB]"></div>
+                    <div class="w-4 bg-[#ADD8E6]"></div>
+                    <div class="w-8 bg-[#66CDAA]"></div>
+                    <div class="w-24 bg-primary"></div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+
+</html>
