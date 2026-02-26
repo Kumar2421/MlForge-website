@@ -1,348 +1,373 @@
 <!DOCTYPE html>
-<html class="scroll-smooth" lang="en">
+<html lang="en">
 
 <head>
   <meta charset="utf-8" />
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-  <title>ML Forge | Guarantees &amp; Boundaries</title>
+  <title>ML Forge - System Guarantees & Operational Boundaries</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
   <link href="https://fonts.googleapis.com" rel="preconnect" />
   <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap"
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;family=Manrope:wght@400;500;700;800&amp;family=Space+Mono:wght@400;700&amp;display=swap"
     rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-  <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet" />
   <script>
     tailwind.config = {
       darkMode: "class",
       theme: {
         extend: {
           colors: {
-            primary: "#4ADE80", // Vibrant Mint Green
-            secondary: "#111111", // Dark Gray
-            obsidian: "#000000", // Pure Black
-            "background-light": "#FFFFFF",
-            "background-dark": "#0A0A0A",
+            primary: "#66FF99",
+            "primary-hover": "#52E085",
+            "background-dark": "#0B0B0B",
+            "surface-dark": "#141414",
+            "accent-yellow": "#FFFF33",
+            "text-dark": "#E5E5E5",
+            "subtle-dark": "#1A1A1A",
           },
           fontFamily: {
-            display: ["Inter", "sans-serif"],
             sans: ["Inter", "sans-serif"],
-          },
-          borderRadius: {
-            DEFAULT: "4px",
-            "lg": "8px",
-            "xl": "12px",
+            display: ["Manrope", "sans-serif"],
+            mono: ["Space Mono", "monospace"],
           },
         },
       },
     };
   </script>
-  <style>
-    body {
-      font-family: 'Inter', sans-serif;
-    }
-
-    .hero-bg {
-      background-color: #4ADE80;
-    }
-
-    .btn-shadow {
-      box-shadow: 0 4px 14px 0 rgba(74, 222, 128, 0.39);
-    }
-  </style>
+  <style type="text/tailwindcss">
+    .glass-card {
+            background: rgba(20, 20, 20, 0.4);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-card:hover {
+            border-color: #66FF99;
+            background: rgba(102, 255, 153, 0.03);
+            transform: translateY(-4px);
+        }
+        .text-glow {
+            text-shadow: 0 0 10px rgba(102, 255, 153, 0.5);
+        }
+        .dashboard-grid {
+            background-size: 40px 40px;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        }
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100vh); }
+        }
+        .scanline-effect::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: linear-gradient(to bottom, transparent, rgba(102, 255, 153, 0.05), transparent);
+            animation: scanline 4s linear infinite;
+            pointer-events: none;
+        }
+        .technical-label {
+            font-size: 9px;
+            font-family: 'Space Mono', monospace;
+            color: #71717a;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        @keyframes slide-up {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .animate-slide-up {
+            animation: slide-up 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            opacity: 0;
+        }
+        .security-badge {
+            @apply px-2 py-1 bg-primary/10 border border-primary/30 text-primary text-[8px] font-black uppercase tracking-widest rounded;
+        }
+    </style>
 </head>
 
-<body
-  class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 transition-colors duration-300">
-  <nav
-    class="sticky top-0 z-50 bg-white/80 dark:bg-obsidian/80 backdrop-blur-md border-b border-gray-100 dark:border-white/10">
-    <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-      <div class="flex items-center gap-2">
-        <a class="flex items-center gap-1.5 font-bold text-xl tracking-tight" href="landing_page.html">
-          <div class="grid grid-cols-2 gap-0.5">
-            <div class="w-2 h-2 bg-slate-900 dark:bg-white"></div>
-            <div class="w-2 h-2 bg-slate-900 dark:bg-white"></div>
-            <div class="w-2 h-2 bg-slate-900 dark:bg-white"></div>
-            <div class="w-2 h-2 bg-primary"></div>
-          </div>
-          <span class="font-extrabold tracking-tighter text-lg uppercase text-black dark:text-white">ML Forge</span>
-        </a>
-      </div>
-      <div class="hidden md:flex items-center gap-8 text-[13px] font-semibold uppercase tracking-wider">
-        <a class="text-xs font-black uppercase tracking-widest text-gray-400 hover:text-primary transition-colors"
-          href="landing_page.html">Home</a>
-        <a class="text-xs font-black uppercase tracking-widest text-gray-400 hover:text-primary transition-colors"
-          href="agentic_page.html">Protocols</a>
-        <a class="text-xs font-black uppercase tracking-widest text-gray-400 hover:text-primary transition-colors"
-          href="vector_db_page.html">Documentation</a>
-        <a class="text-xs font-black uppercase tracking-widest text-gray-400 hover:text-primary transition-colors"
-          href="download_page.html">Download</a>
-        <a class="text-xs font-black uppercase tracking-widest text-gray-400 hover:text-primary transition-colors"
-          href="contact_page.html">Contact</a>
-      </div>
-      <div class="flex items-center gap-4">
-        <button
-          class="px-5 py-2 text-[13px] font-bold border border-gray-200 dark:border-white/20 rounded hover:bg-gray-50 dark:hover:bg-white/5 transition-all text-black dark:text-white">Log
-          In</button>
-        <a class="px-6 py-2 bg-primary text-black text-[13px] font-extrabold rounded shadow-lg hover:brightness-110 transition-all uppercase tracking-tight"
-          href="download_page.html">Get Started</a>
+<body class="bg-background-dark text-text-dark font-sans selection:bg-primary selection:text-black">
+  <!-- Navigation -->
+  <nav class="sticky top-0 z-50 w-full bg-background-dark/90 backdrop-blur-md border-b border-gray-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-20 items-center">
+        <div class="flex items-center">
+          <a href="landing_page.html"
+            class="flex items-center gap-2 text-2xl font-black tracking-tighter text-white uppercase italic">
+            <span class="material-symbols-outlined text-primary scale-125">token</span>
+            ML Forge
+          </a>
+        </div>
+        <div class="flex items-center space-x-8">
+          <a class="text-xs font-black uppercase tracking-widest text-gray-400 hover:text-white transition-colors"
+            href="landing_page.html">Home</a>
+          <a class="text-xs font-black uppercase tracking-widest text-gray-400 hover:text-white transition-colors"
+            href="agentic_page.html">Protocols</a>
+          <a class="text-xs font-black uppercase tracking-widest text-gray-400 hover:text-white transition-colors"
+            href="vector_db_page.html">Documentation</a>
+          <a class="text-xs font-black uppercase tracking-widest text-gray-400 hover:text-white transition-colors"
+            href="download_page.html">Download</a>
+          <a class="inline-flex items-center px-6 py-2.5 text-xs font-black uppercase tracking-widest rounded-sm text-black bg-primary hover:bg-primary-hover transition-all"
+            href="contact_page.html">
+            Contact
+          </a>
+        </div>
       </div>
     </div>
   </nav>
-  <header class="hero-bg py-24 px-6 md:px-12 lg:px-24">
-    <div class="max-w-7xl mx-auto">
-      <p class="text-[12px] font-black tracking-[0.2em] uppercase text-black mb-8">Trust Boundaries</p>
-      <h1 class="text-6xl md:text-8xl font-black text-black tracking-tighter leading-[0.95] mb-10 max-w-4xl">
-        Guarantees &amp; Boundaries
-      </h1>
-      <p class="text-xl md:text-2xl text-black/80 font-medium leading-relaxed max-w-3xl mb-12">
-        This section defines what ML FORGE guarantees at the system level—and what it explicitly does not guarantee—so
-        engineering teams can reason about risk, reproducibility, and operational ownership before adopting it.
-      </p>
-      <div class="flex flex-wrap gap-4">
-        <button
-          class="px-8 py-4 bg-primary text-black border-2 border-black/10 font-black rounded text-[15px] hover:brightness-105 transition-all flex items-center gap-2">
-          Download ML FORGE <span class="material-icons text-sm">arrow_forward</span>
-        </button>
-        <button
-          class="px-8 py-4 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-black border border-black/20 font-bold rounded text-[15px] transition-all">
-          Read documentation
-        </button>
+
+  <!-- Hero Section -->
+  <header class="relative pt-32 pb-40 overflow-hidden border-b border-white/5 bg-background-dark scanline-effect">
+    <div class="absolute inset-0 opacity-10 dashboard-grid"></div>
+    <div class="max-w-5xl mx-auto px-4 relative z-10 text-center">
+      <div
+        class="inline-flex items-center gap-2 px-3 py-1 rounded bg-primary/10 border border-primary/20 text-primary text-[10px] font-black uppercase tracking-widest mb-8">
+        Operational Ownership // Trust Boundaries
       </div>
+      <h1
+        class="text-6xl md:text-9xl font-black text-white leading-[0.8] tracking-tighter uppercase italic mb-8 animate-slide-up">
+        Guarantees <br /><span class="text-primary text-glow">& Boundaries.</span>
+      </h1>
+      <p class="text-xl md:text-2xl text-gray-400 max-w-4xl mx-auto leading-relaxed font-medium animate-slide-up"
+        style="animation-delay: 0.1s;">
+        Technical definitions for system-level operational ownership. ML Forge provides high-fidelity evidence, enabling
+        engineering teams to reason about risk and reproducibility before deployment.
+      </p>
     </div>
   </header>
-  <section class="py-24 px-6 md:px-12 lg:px-24 bg-white dark:bg-background-dark">
-    <div class="max-w-7xl mx-auto">
-      <div class="mb-16">
-        <h2 class="text-4xl md:text-5xl font-black tracking-tight text-black dark:text-white mb-4">Guarantees</h2>
-        <p class="text-lg text-gray-500 dark:text-gray-400 font-medium">What ML FORGE guarantees when you run workflows
-          on your infrastructure.</p>
+
+  <main class="py-32">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <!-- Section: System Guarantees -->
+      <div class="mb-40">
+        <div class="flex justify-between items-end mb-16">
+          <div>
+            <span class="technical-label">Contractual Architecture</span>
+            <h2 class="text-4xl md:text-5xl font-black text-white italic uppercase tracking-tighter">System Guarantees.
+            </h2>
+          </div>
+          <div class="hidden md:block">
+            <span class="security-badge">Infrastructure integrity ensured</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <!-- Local Runtime Integrity -->
+          <div class="glass-card p-10 border-white/5 hover:border-primary/40 group">
+            <div class="flex justify-between items-start mb-6">
+              <span
+                class="material-symbols-outlined text-primary text-3xl group-hover:scale-110 transition-transform">lan</span>
+              <span class="text-[8px] font-mono text-gray-700">KERNEL_ISOLATION</span>
+            </div>
+            <h4 class="text-white font-black uppercase italic tracking-tighter text-xl mb-4">Local Runtime Integrity
+            </h4>
+            <p class="text-xs text-gray-500 leading-relaxed italic">Training, evaluation, and export run exclusively on
+              your infrastructure. ML Forge never requires high-side dataset or model artifact transmission to
+              third-party services.</p>
+          </div>
+
+          <!-- Predictable Execution -->
+          <div class="glass-card p-10 border-white/5 hover:border-accent-yellow transition-all group">
+            <div class="flex justify-between items-start mb-6">
+              <span
+                class="material-symbols-outlined text-accent-yellow text-3xl group-hover:scale-110 transition-transform">history</span>
+              <span class="text-[8px] font-mono text-gray-700">BIT_PARITY</span>
+            </div>
+            <h4 class="text-white font-black uppercase italic tracking-tighter text-xl mb-4">Predictable Execution</h4>
+            <p class="text-xs text-gray-500 leading-relaxed italic">Identical inputs (dataset version, configuration,
+              runtime environment) produce repeatable, inspectable outputs. Every parameter hash is preserved for exact
+              state reconstruction.</p>
+          </div>
+
+          <!-- Traceability & Lineage -->
+          <div class="glass-card p-10 border-white/5 hover:border-white transition-all group">
+            <div class="flex justify-between items-start mb-6">
+              <span
+                class="material-symbols-outlined text-white text-3xl group-hover:scale-110 transition-transform">account_tree</span>
+              <span class="text-[8px] font-mono text-gray-700">LINEAGE_PROTOCOL</span>
+            </div>
+            <h4 class="text-white font-black uppercase italic tracking-tighter text-xl mb-4">Traceability Chain</h4>
+            <p class="text-xs text-gray-500 leading-relaxed italic">An unbroken lineage chain connects dataset versions
+              to run configurations, execution outputs, and final evaluation results. Every deployed artifact is
+              attributable to its originating evidence.</p>
+          </div>
+
+          <!-- Permanent Metadata Audit -->
+          <div class="glass-card p-10 border-white/5 hover:border-primary/40 group">
+            <div class="flex justify-between items-start mb-6">
+              <span
+                class="material-symbols-outlined text-primary text-3xl group-hover:scale-110 transition-transform">inventory_2</span>
+              <span class="text-[8px] font-mono text-gray-700">AUDIT_RETENTION</span>
+            </div>
+            <h4 class="text-white font-black uppercase italic tracking-tighter text-xl mb-4">Permanent Metadata Audit
+            </h4>
+            <p class="text-xs text-gray-500 leading-relaxed italic">Config and run metadata for every experiment is
+              stored to facilitate re-runs or forensic audits. Parameterization and artifact sets are immutable objects
+              in our distribution hub.</p>
+          </div>
+
+          <!-- Verified Export Bundles -->
+          <div class="glass-card p-10 border-white/5 hover:border-accent-yellow transition-all group">
+            <div class="flex justify-between items-start mb-6">
+              <span
+                class="material-symbols-outlined text-accent-yellow text-3xl group-hover:scale-110 transition-transform">verified</span>
+              <span class="text-[8px] font-mono text-gray-700">HASH_LOCK</span>
+            </div>
+            <h4 class="text-white font-black uppercase italic tracking-tighter text-xl mb-4">Verified Export Bundles
+            </h4>
+            <p class="text-xs text-gray-500 leading-relaxed italic">Model exports are cryptographically packaged with
+              associated evidence (metrics, configs, run IDs). Verification of training provenance is baked into every
+              binary.</p>
+          </div>
+
+          <!-- Explicit Workflow Handlers -->
+          <div class="glass-card p-10 border-white/5 hover:border-white transition-all group">
+            <div class="flex justify-between items-start mb-6">
+              <span
+                class="material-symbols-outlined text-white text-3xl group-hover:scale-110 transition-transform">terminal</span>
+              <span class="text-[8px] font-mono text-gray-700">STEP_VERBOSE</span>
+            </div>
+            <h4 class="text-white font-black uppercase italic tracking-tighter text-xl mb-4">Explicit Workflow Handlers
+            </h4>
+            <p class="text-xs text-gray-500 leading-relaxed italic">Actions are executed as explicit sequential steps,
+              never as silent black-box background decisions. Inputs and outcomes are exposed via real-time telemetry
+              streams.</p>
+          </div>
+        </div>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+      <!-- Section: Operational Boundaries -->
+      <div class="mb-40 p-12 glass-card border-white/5 bg-background-dark relative overflow-hidden">
         <div
-          class="bg-secondary dark:bg-black p-10 rounded-xl border border-white/5 hover:border-primary/30 transition-all group">
-          <div
-            class="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
-            <span class="material-icons text-purple-400">history</span>
-          </div>
-          <h3 class="text-2xl font-bold text-white mb-4">Reproducibility</h3>
-          <p class="text-gray-400 leading-relaxed mb-6">
-            We guarantee bit-for-bit reproducibility for all frozen compute environments. Every pipeline run is
-            version-locked to ensure auditability across compliance-regulated industries.
-          </p>
-          <ul class="space-y-3 text-sm font-medium text-gray-500">
-            <li class="flex items-center gap-2"><span
-                class="material-icons text-primary text-[16px]">check_circle</span> Immutable container tags</li>
-            <li class="flex items-center gap-2"><span
-                class="material-icons text-primary text-[16px]">check_circle</span> Versioned configuration hashes</li>
-          </ul>
+          class="absolute inset-0 dashboard-grid shadow-[inset_0_0_100px_rgba(0,0,0,0.8)] opacity-20 pointer-events-none">
         </div>
-        <div
-          class="bg-secondary dark:bg-black p-10 rounded-xl border border-white/5 hover:border-primary/30 transition-all group">
-          <div
-            class="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
-            <span class="material-icons text-blue-400">security</span>
-          </div>
-          <h3 class="text-2xl font-bold text-white mb-4">Data Sovereignty</h3>
-          <p class="text-gray-400 leading-relaxed mb-6">
-            Your training data never leaves your VPC. ML Forge handles orchestration metadata, while heavy payloads
-            remain entirely within your controlled infrastructure boundaries.
-          </p>
-          <ul class="space-y-3 text-sm font-medium text-gray-500">
-            <li class="flex items-center gap-2"><span
-                class="material-icons text-primary text-[16px]">check_circle</span> Air-gapped deployments</li>
-            <li class="flex items-center gap-2"><span
-                class="material-icons text-primary text-[16px]">check_circle</span> Zero data-ingress policy</li>
-          </ul>
-        </div>
-        <div
-          class="bg-secondary dark:bg-black p-10 rounded-xl border border-white/5 hover:border-primary/30 transition-all group">
-          <div
-            class="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
-            <span class="material-icons text-orange-400">bolt</span>
-          </div>
-          <h3 class="text-2xl font-bold text-white mb-4">Performance</h3>
-          <p class="text-gray-400 leading-relaxed mb-6">
-            Sub-millisecond orchestration latency. We guarantee that the overhead of the ML Forge agent is less than
-            0.5% of total compute time for long-running GPU training jobs.
-          </p>
-          <ul class="space-y-3 text-sm font-medium text-gray-500">
-            <li class="flex items-center gap-2"><span
-                class="material-icons text-primary text-[16px]">check_circle</span> Low-latency metadata sync</li>
-            <li class="flex items-center gap-2"><span
-                class="material-icons text-primary text-[16px]">check_circle</span> Multi-GPU optimized kernels</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </section>
-  <section class="py-24 px-6 md:px-12 lg:px-24 bg-obsidian text-white">
-    <div class="max-w-7xl mx-auto">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-        <div>
-          <span
-            class="inline-block px-3 py-1 bg-white/10 text-[10px] font-bold tracking-widest uppercase rounded mb-6 text-primary">Operational
-            Limits</span>
-          <h2 class="text-4xl md:text-5xl font-black mb-8 leading-tight">Explicit System Boundaries</h2>
-          <p class="text-gray-400 text-lg mb-8 max-w-lg">
-            To maintain system stability and clear ownership, we define the following as outside of ML Forge's core
-            guarantees. This allows your platform team to design appropriate failover strategies.
-          </p>
-          <div class="space-y-6">
-            <div class="flex gap-4 p-4 rounded bg-white/5 border-l-2 border-red-500">
-              <span class="material-icons text-red-500">error_outline</span>
-              <div>
-                <p class="font-bold text-white uppercase text-xs mb-1">External API Uptime</p>
-                <p class="text-gray-400 text-sm">We do not guarantee uptime for 3rd party model providers or external
-                  data lake providers.</p>
-              </div>
-            </div>
-            <div class="flex gap-4 p-4 rounded bg-white/5 border-l-2 border-gray-600">
-              <span class="material-icons text-gray-400">memory</span>
-              <div>
-                <p class="font-bold text-white uppercase text-xs mb-1">Custom Hardware Drivers</p>
-                <p class="text-gray-400 text-sm">Responsibility for proprietary FPGA or non-standard accelerator drivers
-                  remains with the hardware owner.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="bg-secondary p-2 rounded-xl border border-white/10 shadow-2xl">
-          <div class="bg-obsidian rounded-lg overflow-hidden border border-white/5">
-            <div class="p-4 border-b border-white/10 flex items-center justify-between">
-              <div class="flex gap-1.5">
-                <div class="w-3 h-3 rounded-full bg-red-500/50"></div>
-                <div class="w-3 h-3 rounded-full bg-yellow-500/50"></div>
-                <div class="w-3 h-3 rounded-full bg-green-500/50"></div>
-              </div>
-              <div class="text-[10px] font-mono text-gray-500">BOUNDARY_MONITOR.LOG</div>
-            </div>
-            <div class="p-6 space-y-4 font-mono text-[11px]">
-              <div class="flex justify-between items-center border-b border-white/5 pb-2">
-                <span class="text-gray-400">INFRA_CONTROL_LAYER</span>
-                <span
-                  class="text-primary bg-primary/10 px-2 py-0.5 rounded uppercase font-bold tracking-widest text-[9px]">Fully
-                  Managed</span>
-              </div>
-              <div class="flex justify-between items-center border-b border-white/5 pb-2">
-                <span class="text-gray-400">DATA_REPLICATION_SYSCALL</span>
-                <span
-                  class="text-primary bg-primary/10 px-2 py-0.5 rounded uppercase font-bold tracking-widest text-[9px]">Fully
-                  Managed</span>
-              </div>
-              <div class="flex justify-between items-center border-b border-white/5 pb-2">
-                <span class="text-gray-400">EXT_NETWORK_DEPENDENCIES</span>
-                <span
-                  class="text-red-400 border border-red-400/30 px-2 py-0.5 rounded uppercase font-bold tracking-widest text-[9px]">User
-                  Managed</span>
-              </div>
-              <div class="flex justify-between items-center border-b border-white/5 pb-2">
-                <span class="text-gray-400">CUSTOM_KERNEL_OPTIMIZATION</span>
-                <span
-                  class="text-red-400 border border-red-400/30 px-2 py-0.5 rounded uppercase font-bold tracking-widest text-[9px]">User
-                  Managed</span>
-              </div>
-              <div class="mt-8 pt-4">
-                <div class="h-24 w-full flex items-end gap-1">
-                  <div class="bg-primary/20 h-1/2 w-full"></div>
-                  <div class="bg-primary/20 h-2/3 w-full"></div>
-                  <div class="bg-primary/20 h-1/3 w-full"></div>
-                  <div class="bg-primary/40 h-3/4 w-full"></div>
-                  <div class="bg-primary h-full w-full"></div>
-                  <div class="bg-primary/60 h-2/3 w-full"></div>
-                  <div class="bg-primary h-5/6 w-full"></div>
+        <div class="relative z-10">
+          <span class="technical-label">Infrastructure Responsibility Matrix</span>
+          <h2 class="text-4xl md:text-5xl font-black text-white italic uppercase tracking-tighter mb-16">System
+            Boundaries.</h2>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <div class="space-y-6">
+              <!-- Result Outcomes -->
+              <div class="group p-6 border border-white/5 bg-black/40 rounded hover:border-red-400/50 transition-all">
+                <div class="flex items-center gap-4 mb-4">
+                  <span class="material-symbols-outlined text-red-400">warning</span>
+                  <h4 class="text-white font-black uppercase italic tracking-tighter text-lg">Model Performance Targets
+                  </h4>
                 </div>
-                <div class="text-center mt-2 text-gray-600 text-[10px] uppercase font-bold">Guaranteed Reliability Index
+                <p class="text-[11px] text-gray-500 italic leading-relaxed">ML Forge cannot guarantee accuracy,
+                  robustness, or fairness targets. Outcomes are strictly dependent on your data quality, labeling
+                  policy, and evaluation design.</p>
+              </div>
+
+              <!-- Runtime Dependencies -->
+              <div class="group p-6 border border-white/5 bg-black/40 rounded hover:border-red-400/50 transition-all">
+                <div class="flex items-center gap-4 mb-4">
+                  <span class="material-symbols-outlined text-red-400">memory</span>
+                  <h4 class="text-white font-black uppercase italic tracking-tighter text-lg">Cross-Hardware
+                    Reproducibility</h4>
                 </div>
+                <p class="text-[11px] text-gray-500 italic leading-relaxed">Identical results are not guaranteed across
+                  materially different hardware, CUDA toolchain versions, or nondeterministic third-party libraries.
+                  Reproducibility is hardware-locked to your runtime environment.</p>
+              </div>
+
+              <!-- Ground Truth -->
+              <div class="group p-6 border border-white/5 bg-black/40 rounded hover:border-red-400/50 transition-all">
+                <div class="flex items-center gap-4 mb-4">
+                  <span class="material-symbols-outlined text-red-400">spellcheck</span>
+                  <h4 class="text-white font-black uppercase italic tracking-tighter text-lg">Annotation Authenticity
+                  </h4>
+                </div>
+                <p class="text-[11px] text-gray-500 italic leading-relaxed">ML Forge provides the workflow structure and
+                  evidence capture, but does not guarantee that your annotations are accurate, consistent, or complete.
+                  Data truth remains a human-in-the-loop responsibility.</p>
+              </div>
+            </div>
+
+            <div class="space-y-6">
+              <!-- Governance -->
+              <div class="group p-6 border border-white/5 bg-black/40 rounded hover:border-red-400/50 transition-all">
+                <div class="flex items-center gap-4 mb-4">
+                  <span class="material-symbols-outlined text-red-400">gavel</span>
+                  <h4 class="text-white font-black uppercase italic tracking-tighter text-lg">Governance & Compliance
+                  </h4>
+                </div>
+                <p class="text-[11px] text-gray-500 italic leading-relaxed">Platform auditability supports your
+                  governance program but does not replace it. Teams must maintain their own access controls, approval
+                  workflows, and validation protocols.</p>
+              </div>
+
+              <!-- Experimental Design -->
+              <div class="group p-6 border border-white/5 bg-black/40 rounded hover:border-red-400/50 transition-all">
+                <div class="flex items-center gap-4 mb-4">
+                  <span class="material-symbols-outlined text-red-400">science</span>
+                  <h4 class="text-white font-black uppercase italic tracking-tighter text-lg">Engineering Design
+                    Integrity</h4>
+                </div>
+                <p class="text-[11px] text-gray-500 italic leading-relaxed">The system makes evidence reviewable but
+                  does not prevent poor experimental design, data leakage, or inappropriate metric choice. Accountably
+                  remains with the engineering lead.</p>
+              </div>
+
+              <!-- Deployment Constraints -->
+              <div class="group p-6 border border-white/5 bg-black/40 rounded hover:border-red-400/50 transition-all">
+                <div class="flex items-center gap-4 mb-4">
+                  <span class="material-symbols-outlined text-red-400">speed</span>
+                  <h4 class="text-white font-black uppercase italic tracking-tighter text-lg">Inference Performance</h4>
+                </div>
+                <p class="text-[11px] text-gray-500 italic leading-relaxed">Latency, throughput, and memory footprint in
+                  downstream environments are not guaranteed by the Forge bin. These must be validated against your
+                  target deployment constraints.</p>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
-  <section class="hero-bg py-24 px-6 text-center">
-    <div class="max-w-4xl mx-auto">
-      <h2 class="text-5xl md:text-7xl font-black text-black tracking-tight mb-8">Ready to deploy?</h2>
-      <p class="text-black/70 text-lg mb-12 font-bold uppercase tracking-widest">Experience the power of guaranteed
-        machine learning workflows.</p>
-      <button
-        class="px-12 py-5 bg-black text-white text-lg font-black rounded hover:bg-gray-900 transition-all uppercase tracking-tighter">
-        Tour the product
-      </button>
-    </div>
-  </section>
-  <footer class="bg-obsidian text-white pt-24 pb-12 px-6 md:px-12 lg:px-24">
-    <div class="max-w-7xl mx-auto">
-      <div class="grid grid-cols-2 md:grid-cols-5 gap-12 mb-20">
-        <div class="col-span-2">
-          <div class="flex items-center gap-2 mb-8">
-            <div class="w-8 h-8 bg-primary rounded flex items-center justify-center">
-              <span class="material-icons text-black text-sm">auto_awesome</span>
-            </div>
-            <span class="font-extrabold tracking-tighter text-lg uppercase">ML Forge</span>
-          </div>
-          <p class="text-gray-500 max-w-xs mb-8">
-            Accelerating the world's shift to agentic AI through industrial-grade orchestration.
-          </p>
-          <div class="flex gap-4">
-            <a class="w-10 h-10 rounded bg-white/5 flex items-center justify-center hover:bg-primary hover:text-black transition-all"
-              href="#">
-              <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
-                <path
-                  d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z">
-                </path>
-              </svg>
-            </a>
-            <a class="w-10 h-10 rounded bg-white/5 flex items-center justify-center hover:bg-primary hover:text-black transition-all"
-              href="#">
-              <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
-                <path
-                  d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z">
-                </path>
-              </svg>
-            </a>
+
+      <!-- CTA Section -->
+      <div class="py-20 text-center relative overflow-hidden">
+        <div class="absolute inset-0 bg-primary/5 blur-3xl rounded-full scale-150 opacity-20"></div>
+        <div class="relative z-10">
+          <h2 class="text-4xl md:text-5xl font-black text-white italic uppercase tracking-tighter mb-12">Ready to run
+            the workflow locally?</h2>
+          <div class="flex flex-wrap justify-center gap-6">
+            <a href="landing_page.html"
+              class="px-10 py-5 bg-primary text-black text-[11px] font-black uppercase tracking-widest rounded-sm hover:shadow-[0_0_30px_rgba(102,255,153,0.4)] transition-all">See
+              the workflow</a>
+            <a href="vector_db_page.html"
+              class="px-10 py-5 border border-white/10 bg-white/5 text-white text-[11px] font-black uppercase tracking-widest rounded-sm hover:bg-white/10 transition-all">Open
+              Documentation</a>
           </div>
         </div>
-        <div>
-          <h4 class="font-black uppercase text-xs tracking-widest mb-6">Product</h4>
-          <ul class="space-y-4 text-sm text-gray-500 font-medium">
-            <li><a class="hover:text-primary" href="#">Overview</a></li>
-            <li><a class="hover:text-primary" href="#">Architecture</a></li>
-            <li><a class="hover:text-primary" href="#">Security</a></li>
-            <li><a class="hover:text-primary" href="#">Pricing</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4 class="font-black uppercase text-xs tracking-widest mb-6">Resources</h4>
-          <ul class="space-y-4 text-sm text-gray-500 font-medium">
-            <li><a class="hover:text-primary" href="#">Documentation</a></li>
-            <li><a class="hover:text-primary" href="#">API Reference</a></li>
-            <li><a class="hover:text-primary" href="#">Guides</a></li>
-            <li><a class="hover:text-primary" href="#">Changelog</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4 class="font-black uppercase text-xs tracking-widest mb-6">Company</h4>
-          <ul class="space-y-4 text-sm text-gray-500 font-medium">
-            <li><a class="hover:text-primary" href="#">About</a></li>
-            <li><a class="hover:text-primary" href="#">Careers</a></li>
-            <li><a class="hover:text-primary" href="#">Legal</a></li>
-            <li><a class="hover:text-primary" href="#">Contact</a></li>
-          </ul>
-        </div>
       </div>
-      <div class="pt-12 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-6">
-        <p class="text-[11px] font-bold text-gray-600 uppercase tracking-widest">© 2024 ML FORGE INDUSTRIAL SYSTEMS. ALL
-          RIGHTS RESERVED.</p>
-        <div class="flex gap-8 text-[11px] font-bold text-gray-600 uppercase tracking-widest">
-          <a class="hover:text-white" href="#">Privacy Policy</a>
-          <a class="hover:text-white" href="#">Terms of Service</a>
-          <a class="hover:text-white" href="#">Cookie Settings</a>
-        </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="py-20 bg-background-dark border-t border-white/5">
+    <div class="max-w-7xl mx-auto px-4 text-center">
+      <div
+        class="flex items-center justify-center gap-2 text-xl font-black tracking-tighter text-white uppercase italic mb-8">
+        <span class="material-symbols-outlined text-primary scale-125">token</span>
+        ML Forge
       </div>
+      <p class="text-[10px] text-gray-600 uppercase font-black tracking-[0.3em]">
+        System Operational Boundaries // FY2026 ml forge ide.
+      </p>
     </div>
   </footer>
-
 </body>
 
 </html>

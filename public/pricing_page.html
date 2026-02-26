@@ -4,55 +4,112 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Pricing Tiers: Flexible Plans</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap"
+    <title>ML Forge - Industrial Pricing Tiers</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;family=Manrope:wght@400;500;700;800&amp;family=Space+Mono:wght@400;700&amp;display=swap"
         rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
     <script>
         tailwind.config = {
             darkMode: "class",
             theme: {
                 extend: {
                     colors: {
-                        primary: "#4ADE80", // Vibrant mint green
-                        "background-light": "#FFFFFF",
-                        "background-dark": "#000000",
-                        "card-dark": "#1A1A1A", // Dark gray for cards
-                        "card-border": "#333333",
+                        primary: "#66FF99",
+                        "primary-hover": "#52E085",
+                        "background-dark": "#0B0B0B",
+                        "surface-dark": "#141414",
+                        "accent-yellow": "#FFFF33",
+                        "text-dark": "#E5E5E5",
+                        "subtle-dark": "#1A1A1A",
                     },
                     fontFamily: {
-                        display: ["Inter", "sans-serif"],
-                        body: ["Inter", "sans-serif"],
+                        sans: ["Inter", "sans-serif"],
+                        display: ["Manrope", "sans-serif"],
+                        mono: ["Space Mono", "monospace"],
                     },
                     borderRadius: {
-                        DEFAULT: "0.5rem",
-                        "xl": "1rem",
+                        DEFAULT: "2px",
+                        md: "4px",
+                        lg: "8px",
                     },
                 },
             },
         };
     </script>
+    <style type="text/tailwindcss">
+        .glass-card {
+            background: rgba(20, 20, 20, 0.4);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-card:hover {
+            border-color: #66FF99;
+            background: rgba(102, 255, 153, 0.03);
+            transform: translateY(-4px);
+        }
+        .text-glow {
+            text-shadow: 0 0 10px rgba(102, 255, 153, 0.5);
+        }
+        .dashboard-grid {
+            background-size: 40px 40px;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        }
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100vh); }
+        }
+        .scanline-effect::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: linear-gradient(to bottom, transparent, rgba(102, 255, 153, 0.05), transparent);
+            animation: scanline 4s linear infinite;
+            pointer-events: none;
+        }
+        .technical-label {
+            font-size: 9px;
+            font-family: 'Space Mono', monospace;
+            color: #71717a;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        @keyframes slide-up {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .animate-slide-up {
+            animation: slide-up 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+    </style>
 </head>
 
-<body
-    class="font-body text-gray-900 dark:text-gray-100 bg-background-light dark:bg-background-dark antialiased transition-colors duration-300">
-    <nav
-        class="sticky top-0 z-50 w-full bg-white dark:bg-background-dark border-b border-gray-100 dark:border-gray-800">
+<body class="bg-background-dark text-text-dark font-sans selection:bg-primary selection:text-black">
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 w-full bg-background-dark/90 backdrop-blur-md border-b border-gray-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <div class="flex-shrink-0 flex items-center gap-2 cursor-pointer">
-                    <a class="flex items-center gap-1.5 font-bold text-xl tracking-tight" href="landing_page.html">
-                        <div class="grid grid-cols-2 gap-0.5">
-                            <div class="w-2 h-2 bg-slate-900 dark:bg-white"></div>
-                            <div class="w-2 h-2 bg-slate-900 dark:bg-white"></div>
-                            <div class="w-2 h-2 bg-slate-900 dark:bg-white"></div>
-                            <div class="w-2 h-2 bg-primary"></div>
-                        </div>
-                        <span class="font-bold text-lg tracking-tight text-black dark:text-white">ML Forge</span>
+            <div class="flex justify-between h-20 items-center">
+                <div class="flex items-center">
+                    <a href="landing_page.html"
+                        class="flex items-center gap-2 text-2xl font-black tracking-tighter text-white uppercase italic">
+                        <span class="material-symbols-outlined text-primary scale-125">token</span>
+                        ML Forge
                     </a>
                 </div>
-                <div class="hidden md:flex space-x-8 items-center">
+                <div class="flex items-center space-x-8">
                     <a class="text-xs font-black uppercase tracking-widest text-gray-400 hover:text-white transition-colors"
                         href="landing_page.html">Home</a>
                     <a class="text-xs font-black uppercase tracking-widest text-gray-400 hover:text-white transition-colors"
@@ -61,499 +118,338 @@
                         href="vector_db_page.html">Documentation</a>
                     <a class="text-xs font-black uppercase tracking-widest text-gray-400 hover:text-white transition-colors"
                         href="download_page.html">Download</a>
-                    <a class="text-xs font-black uppercase tracking-widest text-gray-400 hover:text-white transition-colors"
-                        href="contact_page.html">Contact</a>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <a class="text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-md transition-colors"
-                        href="#">Log In</a>
-                    <a class="text-sm font-bold text-black bg-primary px-5 py-2 rounded-md shadow-sm hover:opacity-90 transition-opacity"
-                        href="download_page.html">Get Started</a>
+                    <a class="inline-flex items-center px-6 py-2.5 text-xs font-black uppercase tracking-widest rounded-sm text-black bg-primary hover:bg-primary-hover transition-all"
+                        href="contact_page.html">
+                        Contact
+                    </a>
                 </div>
             </div>
         </div>
     </nav>
-    <header class="bg-primary w-full py-20 lg:py-32">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="max-w-4xl">
-                <p class="text-sm font-bold tracking-widest text-black/80 uppercase mb-4">Pricing</p>
-                <h1 class="text-6xl md:text-7xl lg:text-8xl font-medium tracking-tight text-black leading-[1.1]">
-                    Desktop-first Vision AI.<br />
-                    Clear tiers.
-                </h1>
+
+    <!-- Pricing Hero -->
+    <header class="relative pt-32 pb-40 overflow-hidden border-b border-white/5 scanline-effect">
+        <div class="absolute inset-0 opacity-10 dashboard-grid"></div>
+        <div class="max-w-5xl mx-auto px-4 relative z-10 text-center">
+            <div
+                class="inline-flex items-center gap-2 px-3 py-1 rounded bg-primary/10 border border-primary/20 text-primary text-[10px] font-black uppercase tracking-widest mb-8">
+                Licensing Protocols // FY2026
             </div>
+            <h1
+                class="text-6xl md:text-9xl font-black text-white leading-[0.8] tracking-tighter uppercase italic mb-8 animate-slide-up">
+                Proof Driven <br /><span class="text-primary text-glow">Pricing.</span>
+            </h1>
+            <p class="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto leading-relaxed font-medium animate-slide-up"
+                style="animation-delay: 0.1s;">
+                Choose the tier that matches the stage you are in — upgrade only when you need deeper control or
+                shipping guarantees. Clear tiers, zero hidden tax.
+            </p>
         </div>
     </header>
-    <main class="bg-background-dark text-white pt-16 pb-24">
+
+    <main class="py-32">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="max-w-3xl mb-16">
-                <p class="text-xl md:text-2xl text-gray-300 leading-relaxed font-light">
-                    Start free and validate your local workflow. Upgrade only when you need deeper data prep, training
-                    control, or production exports.
-                    <span class="text-primary font-medium">No gotchas — limitations are explicit.</span>
-                    Typical workflow: train and deploy a YOLO model locally. NVIDIA GPU recommended for training;
-                    CPU-only is supported (slower).
-                </p>
-            </div>
-            <div class="flex justify-center mb-16">
-                <div class="bg-card-dark p-1 rounded-full inline-flex items-center border border-gray-800">
+            <!-- Toggle -->
+            <div class="flex justify-center mb-20 animate-slide-up" style="animation-delay: 0.2s;">
+                <div class="bg-subtle-dark p-1 rounded border border-white/10 inline-flex items-center">
                     <button
-                        class="px-6 py-2 rounded-full bg-primary text-black font-semibold text-sm transition-all shadow-md">Monthly</button>
+                        class="px-8 py-2 bg-primary text-black text-xs font-black uppercase tracking-widest rounded-sm">Monthly</button>
                     <button
-                        class="px-6 py-2 rounded-full text-gray-400 hover:text-white font-medium text-sm transition-all">Yearly
-                        (Save 15%)</button>
+                        class="px-8 py-2 text-gray-500 hover:text-white text-xs font-black uppercase tracking-widest">Yearly
+                        (-15%)</button>
                 </div>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-24">
-                <div
-                    class="bg-card-dark border border-gray-800 rounded-lg p-6 flex flex-col hover:border-gray-600 transition-colors">
-                    <div class="mb-4">
-                        <h3 class="text-primary font-semibold text-sm tracking-wide uppercase mb-2">Free — Explore</h3>
-                        <div class="flex items-baseline">
-                            <span class="text-4xl font-bold text-white">$0</span>
-                        </div>
+
+            <!-- Pricing Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-32">
+                <!-- Free -->
+                <div class="glass-card p-8 flex flex-col animate-slide-up" style="animation-delay: 0.3s;">
+                    <span class="technical-label">Entry Level // Exploration</span>
+                    <h3 class="text-white text-2xl font-black uppercase italic tracking-tighter mb-2">Explore</h3>
+                    <div class="flex items-baseline gap-1 mb-6">
+                        <span class="text-4xl font-black text-white">$0</span>
                     </div>
-                    <p class="text-gray-400 text-sm mb-6 leading-relaxed">
-                        Build, label, and train locally — evaluate ML FORGE before committing.
+                    <p class="text-xs text-gray-500 mb-8 leading-relaxed">
+                        Build, label, and train locally — evaluate ML Forge before committing to production workflows.
                     </p>
-                    <div class="space-y-4 flex-1">
-                        <div class="flex items-start">
-                            <span
-                                class="flex-shrink-0 w-5 h-5 bg-primary/20 text-primary rounded flex items-center justify-center mr-3 mt-0.5">
-                                <span class="material-icons text-sm font-bold">check</span>
-                            </span>
-                            <span class="text-sm text-gray-300">Model Zoo access (most pre-trained models)</span>
-                        </div>
-                        <div class="flex items-start">
-                            <span
-                                class="flex-shrink-0 w-5 h-5 bg-primary/20 text-primary rounded flex items-center justify-center mr-3 mt-0.5">
-                                <span class="material-icons text-sm font-bold">check</span>
-                            </span>
-                            <span class="text-sm text-gray-300">Dataset Manager (full core features)</span>
-                        </div>
-                        <div class="flex items-start">
-                            <span
-                                class="flex-shrink-0 w-5 h-5 bg-primary/20 text-primary rounded flex items-center justify-center mr-3 mt-0.5">
-                                <span class="material-icons text-sm font-bold">check</span>
-                            </span>
-                            <span class="text-sm text-gray-300">Unlimited Projects</span>
-                        </div>
-                        <div class="flex items-start">
-                            <span
-                                class="flex-shrink-0 w-5 h-5 bg-primary/20 text-primary rounded flex items-center justify-center mr-3 mt-0.5">
-                                <span class="material-icons text-sm font-bold">check</span>
-                            </span>
-                            <span class="text-sm text-gray-300">Local Training (CPU/GPU)</span>
-                        </div>
-                    </div>
+                    <ul class="space-y-4 mb-10 flex-1">
+                        <li class="flex items-start gap-2 text-[11px] text-gray-400 italic">
+                            <span class="material-symbols-outlined text-primary text-sm">check_circle</span>
+                            Model Zoo access (base models)
+                        </li>
+                        <li class="flex items-start gap-2 text-[11px] text-gray-400 italic">
+                            <span class="material-symbols-outlined text-primary text-sm">check_circle</span>
+                            Dataset Manager (core access)
+                        </li>
+                        <li class="flex items-start gap-2 text-[11px] text-gray-400 italic">
+                            <span class="material-symbols-outlined text-primary text-sm">check_circle</span>
+                            Basic Annotation Studio tools
+                        </li>
+                        <li class="flex items-start gap-2 text-[11px] text-gray-400 italic">
+                            <span class="material-symbols-outlined text-primary text-sm">check_circle</span>
+                            Inference execution allowed
+                        </li>
+                        <li class="flex items-start gap-2 text-[11px] text-gray-600 italic">
+                            <span class="material-symbols-outlined text-gray-700 text-sm">cancel</span>
+                            Export protocols locked
+                        </li>
+                    </ul>
+                    <a href="download_page.html"
+                        class="w-full py-4 bg-white/5 border border-white/10 text-white text-[10px] font-black uppercase tracking-widest text-center hover:bg-white/10 transition-all">Download
+                        Free</a>
                 </div>
-                <div
-                    class="bg-card-dark border border-gray-800 rounded-lg p-6 flex flex-col hover:border-gray-600 transition-colors">
-                    <div class="mb-4">
-                        <h3 class="text-primary font-semibold text-sm tracking-wide uppercase mb-2">Data Pro — Prepare
-                        </h3>
-                        <div class="flex items-baseline">
-                            <span class="text-4xl font-bold text-white">₹49.00</span>
-                            <span class="text-gray-400 ml-1 text-sm">/month</span>
-                        </div>
+
+                <!-- Data Pro -->
+                <div class="glass-card p-8 flex flex-col border-white/10 animate-slide-up"
+                    style="animation-delay: 0.4s;">
+                    <span class="technical-label text-accent-yellow">Data Integrity // Prepare</span>
+                    <h3 class="text-white text-2xl font-black uppercase italic tracking-tighter mb-2">Data Pro</h3>
+                    <div class="flex items-baseline gap-1 mb-6">
+                        <span class="text-4xl font-black text-white">₹49</span>
+                        <span class="text-xs text-gray-500">/mo</span>
                     </div>
-                    <p class="text-gray-400 text-sm mb-6 leading-relaxed">
-                        Advanced dataset preparation and transformation for serious projects.
+                    <p class="text-xs text-gray-500 mb-8 leading-relaxed">
+                        Advanced dataset preparation and deterministic locking for serious vision engineering.
                     </p>
-                    <div class="space-y-4 flex-1">
-                        <div class="flex items-start">
-                            <span
-                                class="flex-shrink-0 w-5 h-5 bg-primary/20 text-primary rounded flex items-center justify-center mr-3 mt-0.5">
-                                <span class="material-icons text-sm font-bold">check</span>
-                            </span>
-                            <span class="text-sm text-gray-300">Everything in Free</span>
-                        </div>
-                        <div class="flex items-start">
-                            <span
-                                class="flex-shrink-0 w-5 h-5 bg-primary/20 text-primary rounded flex items-center justify-center mr-3 mt-0.5">
-                                <span class="material-icons text-sm font-bold">check</span>
-                            </span>
-                            <span class="text-sm text-gray-300">Full Dataset Manager</span>
-                        </div>
-                        <div class="flex items-start">
-                            <span
-                                class="flex-shrink-0 w-5 h-5 bg-primary/20 text-primary rounded flex items-center justify-center mr-3 mt-0.5">
-                                <span class="material-icons text-sm font-bold">check</span>
-                            </span>
-                            <span class="text-sm text-gray-300">Face recognition dataset creation</span>
-                        </div>
-                        <div class="flex items-start">
-                            <span
-                                class="flex-shrink-0 w-5 h-5 bg-primary/20 text-primary rounded flex items-center justify-center mr-3 mt-0.5">
-                                <span class="material-icons text-sm font-bold">check</span>
-                            </span>
-                            <span class="text-sm text-gray-300">Video timeline extraction</span>
-                        </div>
-                        <div class="flex items-start">
-                            <span
-                                class="flex-shrink-0 w-5 h-5 bg-primary/20 text-primary rounded flex items-center justify-center mr-3 mt-0.5">
-                                <span class="material-icons text-sm font-bold">check</span>
-                            </span>
-                            <span class="text-sm text-gray-300">Advanced augmentations</span>
-                        </div>
-                    </div>
+                    <ul class="space-y-4 mb-10 flex-1">
+                        <li class="flex items-start gap-2 text-[11px] text-gray-400 italic">
+                            <span class="material-symbols-outlined text-primary text-sm">check_circle</span>
+                            Everything in Explore
+                        </li>
+                        <li class="flex items-start gap-2 text-[11px] text-gray-400 italic">
+                            <span class="material-symbols-outlined text-primary text-sm">check_circle</span>
+                            Face recognition dataset creation
+                        </li>
+                        <li class="flex items-start gap-2 text-[11px] text-gray-400 italic">
+                            <span class="material-symbols-outlined text-primary text-sm">check_circle</span>
+                            Full augmentation suite
+                        </li>
+                        <li class="flex items-start gap-2 text-[11px] text-gray-400 italic">
+                            <span class="material-symbols-outlined text-primary text-sm">check_circle</span>
+                            Dataset version locking
+                        </li>
+                        <li class="flex items-start gap-2 text-[11px] text-gray-600 italic">
+                            <span class="material-symbols-outlined text-gray-700 text-sm">cancel</span>
+                            Auto-tuning protocols
+                        </li>
+                    </ul>
+                    <button
+                        class="w-full py-4 bg-white/5 border border-white/10 text-white text-[10px] font-black uppercase tracking-widest text-center hover:bg-white/10 transition-all">Get
+                        Data Pro</button>
                 </div>
-                <div
-                    class="bg-card-dark border border-gray-800 rounded-lg p-6 flex flex-col hover:border-gray-600 transition-colors">
-                    <div class="mb-4">
-                        <h3 class="text-primary font-semibold text-sm tracking-wide uppercase mb-2">Train Pro — Build
-                        </h3>
-                        <div class="flex items-baseline">
-                            <span class="text-4xl font-bold text-white">₹99.00</span>
-                            <span class="text-gray-400 ml-1 text-sm">/month</span>
-                        </div>
+
+                <!-- Train Pro -->
+                <div class="glass-card p-8 flex flex-col border-primary/50 bg-primary/5 animate-slide-up"
+                    style="animation-delay: 0.5s;">
+                    <span class="technical-label text-primary">High Compute // Build</span>
+                    <h3 class="text-white text-2xl font-black uppercase italic tracking-tighter mb-2">Train Pro</h3>
+                    <div class="flex items-baseline gap-1 mb-6">
+                        <span class="text-4xl font-black text-white">₹99</span>
+                        <span class="text-xs text-gray-500">/mo</span>
                     </div>
-                    <p class="text-gray-400 text-sm mb-6 leading-relaxed">
-                        Train, tune, and analyze models with full visibility and logs.
+                    <p class="text-xs text-gray-500 mb-8 leading-relaxed">
+                        Full model training visibility, hyperparameter sweeps, and shared GPU orchestration.
                     </p>
-                    <div class="space-y-4 flex-1">
-                        <div class="flex items-start">
-                            <span
-                                class="flex-shrink-0 w-5 h-5 bg-primary/20 text-primary rounded flex items-center justify-center mr-3 mt-0.5">
-                                <span class="material-icons text-sm font-bold">check</span>
-                            </span>
-                            <span class="text-sm text-gray-300">Everything in Data Pro</span>
-                        </div>
-                        <div class="flex items-start">
-                            <span
-                                class="flex-shrink-0 w-5 h-5 bg-primary/20 text-primary rounded flex items-center justify-center mr-3 mt-0.5">
-                                <span class="material-icons text-sm font-bold">check</span>
-                            </span>
-                            <span class="text-sm text-gray-300">Full Annotation Studio</span>
-                        </div>
-                        <div class="flex items-start">
-                            <span
-                                class="flex-shrink-0 w-5 h-5 bg-primary/20 text-primary rounded flex items-center justify-center mr-3 mt-0.5">
-                                <span class="material-icons text-sm font-bold">check</span>
-                            </span>
-                            <span class="text-sm text-gray-300">Review &amp; approval workflows</span>
-                        </div>
-                        <div class="flex items-start">
-                            <span
-                                class="flex-shrink-0 w-5 h-5 bg-primary/20 text-primary rounded flex items-center justify-center mr-3 mt-0.5">
-                                <span class="material-icons text-sm font-bold">check</span>
-                            </span>
-                            <span class="text-sm text-gray-300">Hyperparameter Sweeps</span>
-                        </div>
-                        <div class="flex items-start">
-                            <span
-                                class="flex-shrink-0 w-5 h-5 bg-primary/20 text-primary rounded flex items-center justify-center mr-3 mt-0.5">
-                                <span class="material-icons text-sm font-bold">check</span>
-                            </span>
-                            <span class="text-sm text-gray-300">Remote training agents</span>
-                        </div>
-                    </div>
+                    <ul class="space-y-4 mb-10 flex-1">
+                        <li class="flex items-start gap-2 text-[11px] text-gray-400 italic">
+                            <span class="material-symbols-outlined text-primary text-sm">check_circle</span>
+                            Everything in Data Pro
+                        </li>
+                        <li class="flex items-start gap-2 text-[11px] text-gray-400 italic">
+                            <span class="material-symbols-outlined text-primary text-sm">check_circle</span>
+                            Review & approval workflows
+                        </li>
+                        <li class="flex items-start gap-2 text-[11px] text-gray-400 italic">
+                            <span class="material-symbols-outlined text-primary text-sm">check_circle</span>
+                            Shared GPU scheduling
+                        </li>
+                        <li class="flex items-start gap-2 text-[11px] text-gray-400 italic">
+                            <span class="material-symbols-outlined text-primary text-sm">check_circle</span>
+                            Full training logs & visibility
+                        </li>
+                        <li class="flex items-start gap-2 text-[11px] text-gray-600 italic">
+                            <span class="material-symbols-outlined text-gray-700 text-sm">cancel</span>
+                            On-prem edge exports
+                        </li>
+                    </ul>
+                    <button
+                        class="w-full py-4 bg-primary text-black text-[10px] font-black uppercase tracking-widest text-center hover:brightness-110 transition-all">Get
+                        Train Pro</button>
                 </div>
-                <div
-                    class="bg-card-dark border border-gray-800 rounded-lg p-6 flex flex-col hover:border-gray-600 transition-colors">
-                    <div class="mb-4">
-                        <h3 class="text-primary font-semibold text-sm tracking-wide uppercase mb-2">Deploy Pro — Ship
-                        </h3>
-                        <div class="flex items-baseline">
-                            <span class="text-4xl font-bold text-white">₹199.00</span>
-                            <span class="text-gray-400 ml-1 text-sm">/month</span>
-                        </div>
+
+                <!-- Deploy Pro -->
+                <div class="glass-card p-8 flex flex-col animate-slide-up" style="animation-delay: 0.6s;">
+                    <span class="technical-label">Production Ready // Ship</span>
+                    <h3 class="text-white text-2xl font-black uppercase italic tracking-tighter mb-2">Deploy Pro</h3>
+                    <div class="flex items-baseline gap-1 mb-6">
+                        <span class="text-4xl font-black text-white">₹199</span>
+                        <span class="text-xs text-gray-500">/mo</span>
                     </div>
-                    <p class="text-gray-400 text-sm mb-6 leading-relaxed">
-                        Production-grade export, benchmarking, and deployment.
+                    <p class="text-xs text-gray-500 mb-8 leading-relaxed">
+                        Production-grade export, industrial benchmarking, and offline edge deployment.
                     </p>
-                    <div class="space-y-4 flex-1">
-                        <div class="flex items-start">
-                            <span
-                                class="flex-shrink-0 w-5 h-5 bg-primary/20 text-primary rounded flex items-center justify-center mr-3 mt-0.5">
-                                <span class="material-icons text-sm font-bold">check</span>
-                            </span>
-                            <span class="text-sm text-gray-300">Everything unlocked</span>
-                        </div>
-                        <div class="flex items-start">
-                            <span
-                                class="flex-shrink-0 w-5 h-5 bg-primary/20 text-primary rounded flex items-center justify-center mr-3 mt-0.5">
-                                <span class="material-icons text-sm font-bold">check</span>
-                            </span>
-                            <span class="text-sm text-gray-300">Full export formats (ONNX, TensorRT, CoreML,
-                                etc.)</span>
-                        </div>
-                        <div class="flex items-start">
-                            <span
-                                class="flex-shrink-0 w-5 h-5 bg-primary/20 text-primary rounded flex items-center justify-center mr-3 mt-0.5">
-                                <span class="material-icons text-sm font-bold">check</span>
-                            </span>
-                            <span class="text-sm text-gray-300">Benchmarking tools</span>
-                        </div>
-                        <div class="flex items-start">
-                            <span
-                                class="flex-shrink-0 w-5 h-5 bg-primary/20 text-primary rounded flex items-center justify-center mr-3 mt-0.5">
-                                <span class="material-icons text-sm font-bold">check</span>
-                            </span>
-                            <span class="text-sm text-gray-300">Docker container exports</span>
-                        </div>
-                        <div class="flex items-start">
-                            <span
-                                class="flex-shrink-0 w-5 h-5 bg-primary/20 text-primary rounded flex items-center justify-center mr-3 mt-0.5">
-                                <span class="material-icons text-sm font-bold">check</span>
-                            </span>
-                            <span class="text-sm text-gray-300">Enterprise SSO Integration</span>
-                        </div>
-                    </div>
+                    <ul class="space-y-4 mb-10 flex-1">
+                        <li class="flex items-start gap-2 text-[11px] text-gray-400 italic">
+                            <span class="material-symbols-outlined text-primary text-sm">check_circle</span>
+                            Everything in Train Pro
+                        </li>
+                        <li class="flex items-start gap-2 text-[11px] text-gray-400 italic">
+                            <span class="material-symbols-outlined text-primary text-sm">check_circle</span>
+                            All Export Formats (ONNX, TRT, C++)
+                        </li>
+                        <li class="flex items-start gap-2 text-[11px] text-gray-400 italic">
+                            <span class="material-symbols-outlined text-primary text-sm">check_circle</span>
+                            Edge / On-prem / Offline support
+                        </li>
+                        <li class="flex items-start gap-2 text-[11px] text-gray-400 italic">
+                            <span class="material-symbols-outlined text-primary text-sm">check_circle</span>
+                            Full industrial audit logs
+                        </li>
+                        <li class="flex items-start gap-2 text-[11px] text-gray-400 italic">
+                            <span class="material-symbols-outlined text-primary text-sm">check_circle</span>
+                            Priority GPU scheduling
+                        </li>
+                    </ul>
+                    <button
+                        class="w-full py-4 bg-white/5 border border-white/10 text-white text-[10px] font-black uppercase tracking-widest text-center hover:bg-white/10 transition-all">Get
+                        Deploy Pro</button>
                 </div>
             </div>
-            <div class="mb-24">
-                <div class="max-w-3xl mb-12">
-                    <h2 class="text-3xl md:text-4xl font-medium text-primary mb-4">Feature Comparison</h2>
-                    <p class="text-gray-400 text-lg">See what's included in each plan. Upgrade when you outgrow your
-                        current workflow — no surprises.</p>
+
+            <!-- Comparison Table -->
+            <div class="mb-40">
+                <div class="mb-12">
+                    <span class="technical-label">Feature Matrix</span>
+                    <h2 class="text-4xl font-black text-white italic uppercase tracking-tighter">Integrity Protocols
+                    </h2>
                 </div>
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
+                    <table class="w-full text-left border-collapse border border-white/5">
                         <thead>
-                            <tr class="border-b border-gray-800">
-                                <th class="py-4 pl-4 pr-6 text-sm font-semibold text-primary uppercase tracking-wide">
-                                    Feature</th>
-                                <th class="py-4 px-6 text-sm font-semibold text-white">Free</th>
-                                <th class="py-4 px-6 text-sm font-semibold text-white">Data Pro</th>
-                                <th class="py-4 px-6 text-sm font-semibold text-white">Train Pro</th>
-                                <th class="py-4 px-6 text-sm font-semibold text-white">Deploy Pro</th>
+                            <tr class="bg-subtle-dark border-b border-white/5">
+                                <th class="py-6 px-6 text-[10px] font-black uppercase tracking-widest text-gray-500">
+                                    Infrastructure Resource</th>
+                                <th class="py-6 px-6 text-[10px] font-black uppercase tracking-widest text-white">
+                                    Explore</th>
+                                <th class="py-6 px-6 text-[10px] font-black uppercase tracking-widest text-white">Data
+                                    Pro</th>
+                                <th class="py-6 px-6 text-[10px] font-black uppercase tracking-widest text-white">Train
+                                    Pro</th>
+                                <th class="py-6 px-6 text-[10px] font-black uppercase tracking-widest text-white">Deploy
+                                    Pro</th>
                             </tr>
                         </thead>
-                        <tbody class="text-sm text-gray-300">
-                            <tr class="border-b border-gray-800 hover:bg-white/5 transition-colors">
-                                <td class="py-4 pl-4 pr-6 font-medium text-white">Model Zoo</td>
-                                <td class="py-4 px-6"><span class="flex items-center gap-2"><span
-                                            class="material-icons text-primary text-base">check</span> Most
-                                        models</span></td>
-                                <td class="py-4 px-6"><span class="flex items-center gap-2"><span
-                                            class="material-icons text-primary text-base">check</span> Most
-                                        models</span></td>
-                                <td class="py-4 px-6"><span class="flex items-center gap-2"><span
-                                            class="material-icons text-primary text-base">check</span> All models</span>
+                        <tbody class="text-[11px] italic text-gray-400">
+                            <tr class="border-b border-white/5 hover:bg-white/5 transition-colors">
+                                <td class="py-4 px-6 text-white font-bold uppercase tracking-tight">Model Zoo Access
                                 </td>
-                                <td class="py-4 px-6"><span class="flex items-center gap-2"><span
-                                            class="material-icons text-primary text-base">check</span> All models</span>
-                                </td>
+                                <td class="py-4 px-6">Base Models</td>
+                                <td class="py-4 px-6">Base Models</td>
+                                <td class="py-4 px-6 text-primary">Full Archive</td>
+                                <td class="py-4 px-6 text-primary">Full Archive</td>
                             </tr>
-                            <tr class="border-b border-gray-800 hover:bg-white/5 transition-colors">
-                                <td class="py-4 pl-4 pr-6 font-medium text-white">Dataset Manager</td>
-                                <td class="py-4 px-6"><span class="flex items-center gap-2"><span
-                                            class="material-icons text-primary text-base">check</span> Core
-                                        access</span></td>
-                                <td class="py-4 px-6"><span class="flex items-center gap-2"><span
-                                            class="material-icons text-primary text-base">check</span> Full
-                                        access</span></td>
-                                <td class="py-4 px-6"><span class="flex items-center gap-2"><span
-                                            class="material-icons text-primary text-base">check</span> Full
-                                        access</span></td>
-                                <td class="py-4 px-6"><span class="flex items-center gap-2"><span
-                                            class="material-icons text-primary text-base">check</span> Full
-                                        access</span></td>
+                            <tr class="border-b border-white/5 hover:bg-white/5 transition-colors">
+                                <td class="py-4 px-6 text-white font-bold uppercase tracking-tight">Dataset
+                                    Transformation</td>
+                                <td class="py-4 px-6">Core Only</td>
+                                <td class="py-4 px-6 text-primary">Full Suite</td>
+                                <td class="py-4 px-6 text-primary">Full Suite</td>
+                                <td class="py-4 px-6 text-primary">Full Suite</td>
                             </tr>
-                            <tr class="border-b border-gray-800 hover:bg-white/5 transition-colors">
-                                <td class="py-4 pl-4 pr-6 font-medium text-white">Face Dataset Conversion</td>
-                                <td class="py-4 px-6"><span class="material-icons text-red-500 text-base">close</span>
+                            <tr class="border-b border-white/5 hover:bg-white/5 transition-colors">
+                                <td class="py-4 px-6 text-white font-bold uppercase tracking-tight">Annotation Engine
                                 </td>
-                                <td class="py-4 px-6"><span class="material-icons text-primary text-base">check</span>
-                                </td>
-                                <td class="py-4 px-6"><span class="material-icons text-primary text-base">check</span>
-                                </td>
-                                <td class="py-4 px-6"><span class="material-icons text-primary text-base">check</span>
-                                </td>
+                                <td class="py-4 px-6">Basic Local</td>
+                                <td class="py-4 px-6">Basic Local</td>
+                                <td class="py-4 px-6 text-primary font-bold">Industrial Studio</td>
+                                <td class="py-4 px-6 text-primary font-bold">Industrial Studio</td>
                             </tr>
-                            <tr class="border-b border-gray-800 hover:bg-white/5 transition-colors">
-                                <td class="py-4 pl-4 pr-6 font-medium text-white">Annotation Tools</td>
-                                <td class="py-4 px-6"><span class="flex items-center gap-2"><span
-                                            class="material-icons text-primary text-base">check</span> Basic</span></td>
-                                <td class="py-4 px-6"><span class="flex items-center gap-2"><span
-                                            class="material-icons text-primary text-base">check</span> Full +
-                                        Review</span></td>
-                                <td class="py-4 px-6"><span class="flex items-center gap-2"><span
-                                            class="material-icons text-primary text-base">check</span> Full +
-                                        Review</span></td>
-                                <td class="py-4 px-6"><span class="flex items-center gap-2"><span
-                                            class="material-icons text-primary text-base">check</span> Full +
-                                        Review</span></td>
+                            <tr class="border-b border-white/5 hover:bg-white/5 transition-colors">
+                                <td class="py-4 px-6 text-white font-bold uppercase tracking-tight">GPU Scheduling</td>
+                                <td class="py-4 px-6">Local Single</td>
+                                <td class="py-4 px-6">Local Single</td>
+                                <td class="py-4 px-6 text-accent-yellow">Shared Queue</td>
+                                <td class="py-4 px-6 text-primary font-black uppercase">Priority Direct</td>
                             </tr>
-                            <tr class="border-b border-gray-800 hover:bg-white/5 transition-colors">
-                                <td class="py-4 pl-4 pr-6 font-medium text-white">Training</td>
-                                <td class="py-4 px-6"><span class="flex items-center gap-2"><span
-                                            class="material-icons text-primary text-base">check</span>
-                                        Small/Medium</span></td>
-                                <td class="py-4 px-6"><span class="flex items-center gap-2"><span
-                                            class="material-icons text-primary text-base">check</span>
-                                        Small/Medium</span></td>
-                                <td class="py-4 px-6"><span class="flex items-center gap-2"><span
-                                            class="material-icons text-primary text-base">check</span> All +
-                                        Auto-tune</span></td>
-                                <td class="py-4 px-6"><span class="flex items-center gap-2"><span
-                                            class="material-icons text-primary text-base">check</span> All +
-                                        Auto-tune</span></td>
+                            <tr class="border-b border-white/5 hover:bg-white/5 transition-colors">
+                                <td class="py-4 px-6 text-white font-bold uppercase tracking-tight">Audit Visibility
+                                </td>
+                                <td class="py-4 px-6">Internal Only</td>
+                                <td class="py-4 px-6">Internal Only</td>
+                                <td class="py-4 px-6 text-primary">Full Persistence</td>
+                                <td class="py-4 px-6 text-primary font-black uppercase">Compliance Ready</td>
                             </tr>
-                            <tr class="border-b border-gray-800 hover:bg-white/5 transition-colors">
-                                <td class="py-4 pl-4 pr-6 font-medium text-white">Inference Visibility</td>
-                                <td class="py-4 px-6">Basic</td>
-                                <td class="py-4 px-6"><span class="text-yellow-500 flex items-center gap-1"><span
-                                            class="material-icons text-base">warning</span> Limited</span></td>
-                                <td class="py-4 px-6"><span class="flex items-center gap-2"><span
-                                            class="material-icons text-primary text-base">check</span> Full</span></td>
-                                <td class="py-4 px-6"><span class="flex items-center gap-2"><span
-                                            class="material-icons text-primary text-base">check</span> Full</span></td>
-                            </tr>
-                            <tr class="border-b border-gray-800 hover:bg-white/5 transition-colors">
-                                <td class="py-4 pl-4 pr-6 font-medium text-white">Training Logs</td>
-                                <td class="py-4 px-6"><span class="flex items-center gap-2"><span
-                                            class="material-icons text-primary text-base">check</span> Basic</span></td>
-                                <td class="py-4 px-6"><span class="flex items-center gap-2"><span
-                                            class="material-icons text-primary text-base">check</span> Basic</span></td>
-                                <td class="py-4 px-6"><span class="flex items-center gap-2"><span
-                                            class="material-icons text-primary text-base">check</span> Full</span></td>
-                                <td class="py-4 px-6"><span class="flex items-center gap-2"><span
-                                            class="material-icons text-primary text-base">check</span> Full</span></td>
-                            </tr>
-                            <tr class="border-b border-gray-800 hover:bg-white/5 transition-colors">
-                                <td class="py-4 pl-4 pr-6 font-medium text-white">Export Formats</td>
-                                <td class="py-4 px-6"><span class="material-icons text-red-500 text-base">close</span>
+                            <tr class="border-b border-white/5 hover:bg-white/5 transition-colors">
+                                <td class="py-4 px-6 text-white font-bold uppercase tracking-tight">V4 Kernel Export
                                 </td>
-                                <td class="py-4 px-6"><span class="material-icons text-red-500 text-base">close</span>
-                                </td>
-                                <td class="py-4 px-6"><span class="text-yellow-500 flex items-center gap-1"><span
-                                            class="material-icons text-base">warning</span> Limited</span></td>
-                                <td class="py-4 px-6"><span class="flex items-center gap-2"><span
-                                            class="material-icons text-primary text-base">check</span> All
-                                        formats</span></td>
-                            </tr>
-                            <tr class="border-b border-gray-800 hover:bg-white/5 transition-colors">
-                                <td class="py-4 pl-4 pr-6 font-medium text-white">Benchmarking</td>
-                                <td class="py-4 px-6"><span class="material-icons text-red-500 text-base">close</span>
-                                </td>
-                                <td class="py-4 px-6"><span class="material-icons text-red-500 text-base">close</span>
-                                </td>
-                                <td class="py-4 px-6"><span class="text-yellow-500 flex items-center gap-1"><span
-                                            class="material-icons text-base">warning</span> Limited</span></td>
-                                <td class="py-4 px-6"><span class="flex items-center gap-2"><span
-                                            class="material-icons text-primary text-base">check</span> Full</span></td>
-                            </tr>
-                            <tr class="border-b border-gray-800 hover:bg-white/5 transition-colors">
-                                <td class="py-4 pl-4 pr-6 font-medium text-white">Team Collaboration</td>
-                                <td class="py-4 px-6"><span class="material-icons text-red-500 text-base">close</span>
-                                </td>
-                                <td class="py-4 px-6"><span class="material-icons text-primary text-base">check</span>
-                                </td>
-                                <td class="py-4 px-6"><span class="material-icons text-primary text-base">check</span>
-                                </td>
-                                <td class="py-4 px-6"><span class="material-icons text-primary text-base">check</span>
-                                </td>
-                            </tr>
-                            <tr class="border-b border-gray-800 hover:bg-white/5 transition-colors">
-                                <td class="py-4 pl-4 pr-6 font-medium text-white">Deployment</td>
-                                <td class="py-4 px-6"><span class="material-icons text-red-500 text-base">close</span>
-                                </td>
-                                <td class="py-4 px-6"><span class="material-icons text-red-500 text-base">close</span>
-                                </td>
-                                <td class="py-4 px-6"><span class="material-icons text-red-500 text-base">close</span>
-                                </td>
-                                <td class="py-4 px-6"><span class="flex items-center gap-2"><span
-                                            class="material-icons text-primary text-base">check</span>
-                                        Edge/On-prem</span></td>
+                                <td class="py-4 px-6">Locked</td>
+                                <td class="py-4 px-6">Locked</td>
+                                <td class="py-4 px-6 text-accent-yellow">Restricted</td>
+                                <td class="py-4 px-6 text-primary font-black uppercase">Standardized</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
-            <div class="mb-12">
-                <h2 class="text-3xl md:text-4xl font-medium text-white mb-12 max-w-3xl">Clear upgrade path for teams who
-                    cannot afford silent failures</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-white text-black p-8 rounded-lg relative overflow-hidden group">
-                        <h3 class="text-lg font-medium mb-2">Run inference, upgrade to use benchmarks</h3>
-                        <p class="text-gray-500 text-sm mb-12 leading-relaxed">Inference executes in Free tier, Upgrade
-                            to Train Pro use benchmarks</p>
-                        <div class="absolute bottom-0 left-0 w-full h-1 bg-gray-200">
-                            <div class="h-full bg-primary w-1/4"></div>
+
+            <!-- Upgrade Story Section -->
+            <div class="mb-32">
+                <span class="technical-label">Lifecycle Integration</span>
+                <h2 class="text-4xl md:text-6xl font-black text-white italic uppercase tracking-tighter mb-16">The
+                    Hardware <br /><span class="text-primary">Upgrade Path.</span></h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                    <div class="relative pl-12 border-l border-white/10">
+                        <div
+                            class="absolute -left-3 top-0 w-6 h-6 rounded-full bg-background-dark border border-primary flex items-center justify-center">
+                            <div class="w-1.5 h-1.5 rounded-full bg-primary"></div>
                         </div>
-                        <div class="absolute bottom-4 left-8 text-xs font-medium text-gray-500">Free → Train Pro</div>
+                        <h4 class="text-white font-black uppercase text-lg mb-4">Phase 01: Exploration</h4>
+                        <p class="text-sm text-gray-500 leading-relaxed italic">
+                            Start with a reproducible local workflow. Validate your data ingestion and model
+                            architecture without capital commitments.
+                        </p>
                     </div>
-                    <div class="bg-white text-black p-8 rounded-lg relative overflow-hidden group">
-                        <h3 class="text-lg font-medium mb-2">Prepare datasets faster with Data Pro</h3>
-                        <p class="text-gray-500 text-sm mb-12 leading-relaxed">Unlock face recognition dataset
-                            conversion, advanced augmentations, and full preprocessing tools.</p>
-                        <div class="absolute bottom-0 left-0 w-full h-1 bg-gray-200">
-                            <div class="h-full bg-primary w-1/2"></div>
+                    <div class="relative pl-12 border-l border-white/10">
+                        <div
+                            class="absolute -left-3 top-0 w-6 h-6 rounded-full bg-background-dark border border-accent-yellow flex items-center justify-center">
+                            <div class="w-1.5 h-1.5 rounded-full bg-accent-yellow"></div>
                         </div>
-                        <div class="absolute bottom-4 left-8 text-xs font-medium text-gray-500">Free → Data Pro</div>
+                        <h4 class="text-white font-black uppercase text-lg mb-4">Phase 02: Scale</h4>
+                        <p class="text-sm text-gray-500 leading-relaxed italic">
+                            When you need deterministic dataset prep and locking, move to Data Pro. When training
+                            visibility becomes critical, Train Pro unlocks the logs.
+                        </p>
                     </div>
-                    <div class="bg-white text-black p-8 rounded-lg relative overflow-hidden group">
-                        <h3 class="text-lg font-medium mb-2">Unlock auto-tuning in Train Pro</h3>
-                        <p class="text-gray-500 text-sm mb-12 leading-relaxed">Access all models, auto-tuning, team
-                            collaboration, and full training logs for serious workflows.</p>
-                        <div class="absolute bottom-0 left-0 w-full h-1 bg-gray-200">
-                            <div class="h-full bg-primary w-3/4"></div>
+                    <div class="relative pl-12 border-l border-white/10">
+                        <div
+                            class="absolute -left-3 top-0 w-6 h-6 rounded-full bg-background-dark border border-white flex items-center justify-center">
+                            <div class="w-1.5 h-1.5 rounded-full bg-white"></div>
                         </div>
-                        <div class="absolute bottom-4 left-8 text-xs font-medium text-gray-500">Data Pro → Train Pro
-                        </div>
-                    </div>
-                    <div class="bg-white text-black p-8 rounded-lg relative overflow-hidden group">
-                        <h3 class="text-lg font-medium mb-2">Ship models with Deploy Pro</h3>
-                        <p class="text-gray-500 text-sm mb-12 leading-relaxed">Export to production formats, run full
-                            benchmarks, and deploy to edge or on-prem environments.</p>
-                        <div class="absolute bottom-0 left-0 w-full h-1 bg-gray-200">
-                            <div class="h-full bg-primary w-full"></div>
-                        </div>
-                        <div class="absolute bottom-4 left-8 text-xs font-medium text-gray-500">Train Pro → Deploy Pro
-                        </div>
+                        <h4 class="text-white font-black uppercase text-lg mb-4">Phase 03: Production</h4>
+                        <p class="text-sm text-gray-500 leading-relaxed italic">
+                            When it’s time to ship to edge hardware or secure air-gapped environments, Deploy Pro
+                            unlocks production standardized exports.
+                        </p>
                     </div>
                 </div>
             </div>
         </div>
     </main>
-    <section class="bg-primary w-full py-24 border-t border-black/10">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <p class="text-sm font-bold tracking-widest text-black/60 uppercase mb-4">CANONICAL USE CASE</p>
-            <h2 class="text-5xl md:text-6xl font-medium tracking-tight text-black leading-tight mb-8 max-w-5xl">
-                End-to-end vision model workflow in ML FORGE
-            </h2>
-            <p class="text-xl md:text-2xl text-black/80 font-light max-w-4xl leading-relaxed">
-                A concrete, end-to-end example you can adapt: import data, label, train locally, evaluate, and export to
-                ONNX/TensorRT — with dataset locks, config snapshots, and full lineage. YOLO is a common starting point,
-                but the workflow supports other model families and task types.
-            </p>
-        </div>
-    </section>
-    <section class="bg-white dark:bg-background-light py-24">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-4xl md:text-5xl font-medium text-black dark:text-black mb-4">
-                Inputs <span class="font-light mx-2">→</span> Outputs
-            </h2>
-            <p class="text-lg text-gray-600 dark:text-gray-600 mb-12">
-                What you start with, what ML FORGE produces, and what you ship.
-            </p>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="bg-[#1A1A1A] text-white p-8 rounded-sm">
-                    <h3 class="text-primary font-bold text-lg mb-4">Inputs</h3>
-                    <p class="text-gray-300 leading-relaxed text-sm">
-                        Image folders or video files, labels (optional), and a target task type (detection,
-                        segmentation, classification, pose). You stay in control of storage and infrastructure.
-                    </p>
-                </div>
-                <div class="bg-[#1A1A1A] text-white p-8 rounded-sm">
-                    <h3 class="text-primary font-bold text-lg mb-4">Core artifacts</h3>
-                    <p class="text-gray-300 leading-relaxed text-sm">
-                        Immutable dataset version, approved labels, config snapshot, metrics report, checkpoints, and a
-                        reproducibility chain.
-                    </p>
-                </div>
-                <div class="bg-[#1A1A1A] text-white p-8 rounded-sm">
-                    <h3 class="text-primary font-bold text-lg mb-4">Outputs</h3>
-                    <p class="text-gray-300 leading-relaxed text-sm">
-                        Export bundles for deployment (ONNX / TensorRT), including model + class map + dataset version +
-                        metrics + config snapshot.
-                    </p>
-                </div>
+
+    <!-- Footer -->
+    <footer class="py-20 bg-background-dark border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <div
+                class="flex items-center justify-center gap-2 text-xl font-black tracking-tighter text-white uppercase italic mb-8">
+                <span class="material-symbols-outlined text-primary scale-125">token</span>
+                ML Forge
             </div>
+            <p class="text-[10px] text-gray-600 uppercase font-black tracking-[0.3em]">
+                Industrial Licensing Modules // &copy; 2026 ml forge ide.
+            </p>
         </div>
-    </section>
+    </footer>
 </body>
 
 </html>
