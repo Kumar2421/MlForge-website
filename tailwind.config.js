@@ -12,19 +12,24 @@ export default {
                 'display-md': ['2.25rem', { lineHeight: '2.75rem', letterSpacing: '-0.02em' }],
                 'display-lg': ['3rem', { lineHeight: '3.5rem', letterSpacing: '-0.02em' }],
             },
-            backgroundColor: {
-                primary: '#ffffff',
-                secondary: '#F2F4F7',
-            },
-            textColor: {
-                primary: '#0b0f12',
-                tertiary: '#4D5761',
-                'brand-secondary': '#6941C6',
-            },
             colors: {
+                primary: "#66FF99",
+                "primary-hover": "#52E085",
+                "background-dark": "#0B0B0B",
+                "surface-dark": "#141414",
+                "accent-yellow": "#FFFF33",
+                "text-dark": "#E5E5E5",
+                "subtle-dark": "#1A1A1A",
+                accent: "#66FF99",
+                "text-gray": "#A3A3A3",
                 'brand-secondary': '#6941C6',
                 secondary: '#F2F4F7',
                 'fg-white': '#ffffff',
+            },
+            fontFamily: {
+                sans: ['Inter', 'sans-serif'],
+                display: ['Manrope', 'sans-serif'],
+                mono: ['Space Mono', 'monospace'],
             },
             borderRadius: {
                 xs: '0.125rem',

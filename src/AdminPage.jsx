@@ -66,10 +66,10 @@ const AdminReleaseTab = lazy(() => import('./components/admin/AdminReleaseTab'))
 
 function PageHeader({ title, description, right }) {
     return (
-        <div className="flex flex-col gap-2 border-b border-border/50 pb-4 sm:flex-row sm:items-end sm:justify-between">
+        <div className="flex flex-col gap-2 border-b border-white/5 pb-6 mb-8 sm:flex-row sm:items-end sm:justify-between">
             <div className="min-w-0">
-                <div className="truncate text-base font-semibold tracking-tight">{title}</div>
-                {description ? <div className="mt-0.5 text-sm text-muted-foreground">{description}</div> : null}
+                <div className="truncate text-2xl font-bold tracking-tighter text-white">{title}</div>
+                {description ? <div className="mt-1 text-sm text-gray-400 font-light">{description}</div> : null}
             </div>
             {right ? <div className="shrink-0">{right}</div> : null}
         </div>
@@ -78,11 +78,11 @@ function PageHeader({ title, description, right }) {
 
 function SectionCard({ title, description, action, children }) {
     return (
-        <Card>
-            <CardHeader className="flex flex-row items-start justify-between gap-3 space-y-0">
+        <Card className="glass-panel border-white/5 bg-[#080808]/50 backdrop-blur-xl transition-all hover:border-white/10">
+            <CardHeader className="flex flex-row items-start justify-between gap-3 space-y-0 pb-2">
                 <div className="min-w-0">
-                    <CardTitle className="truncate text-sm font-semibold tracking-tight">{title}</CardTitle>
-                    {description ? <CardDescription className="mt-1">{description}</CardDescription> : null}
+                    <CardTitle className="truncate font-bold tracking-tight text-white">{title}</CardTitle>
+                    {description ? <CardDescription className="mt-1 text-xs text-gray-500 font-light leading-relaxed">{description}</CardDescription> : null}
                 </div>
                 {action ? <div className="shrink-0">{action}</div> : null}
             </CardHeader>
@@ -132,15 +132,11 @@ function AdminPage({ session, navigate }) {
 
     useEffect(() => {
         if (typeof document === 'undefined') return
-        const html = document.documentElement
-        const body = document.body
-        const prevHtmlOverflow = html.style.overflow
-        const prevBodyOverflow = body.style.overflow
-        html.style.overflow = 'hidden'
-        body.style.overflow = 'hidden'
+        document.documentElement.style.overflow = 'hidden'
+        document.body.style.overflow = 'hidden'
         return () => {
-            html.style.overflow = prevHtmlOverflow
-            body.style.overflow = prevBodyOverflow
+            document.documentElement.style.overflow = ''
+            document.body.style.overflow = ''
         }
     }, [])
     const [inboxMessages, setInboxMessages] = useState([])

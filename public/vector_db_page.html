@@ -57,37 +57,9 @@
 
 <body
     class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased min-h-screen flex flex-col">
-    <div class="bg-slate-900 text-white text-xs py-2 px-4 flex justify-between items-center">
-        <div class="flex-1 text-center">ML Forge IDE Documentation</div>
-    </div>
+    <!-- NAVBAR PLACEHOLDER (Injected via components.js) -->
+    <div id="navbar-placeholder"></div>
     <header class="border-b border-border-light dark:border-border-dark bg-white dark:bg-slate-900 sticky top-0 z-50">
-        <div class="max-w-[1600px] mx-auto px-6 py-3 flex justify-between items-center">
-            <div class="flex items-center gap-2">
-                <div class="flex items-center gap-1.5 font-bold text-xl tracking-tight">
-                    <div class="grid grid-cols-2 gap-0.5">
-                        <div class="w-2 h-2 bg-slate-900 dark:bg-white"></div>
-                        <div class="w-2 h-2 bg-slate-900 dark:bg-white"></div>
-                        <div class="w-2 h-2 bg-slate-900 dark:bg-white"></div>
-                        <div class="w-2 h-2 bg-primary"></div>
-                    </div>
-                    <span>ML Forge</span>
-                </div>
-            </div>
-            <nav class="flex items-center gap-6 text-sm font-medium">
-                <a class="hover:text-primary transition-colors text-gray-400" href="landing_page.html">Home</a>
-                <a class="hover:text-primary transition-colors text-gray-400" href="agentic_page.html">Protocols</a>
-                <a class="hover:text-primary transition-colors text-primary border-b-2 border-primary active-tab"
-                    href="vector_db_page.html">Documentation</a>
-                <a class="hover:text-primary transition-colors text-gray-400" href="download_page.html">Download</a>
-                <a class="hover:text-primary transition-colors text-gray-400" href="contact_page.html">Contact</a>
-                <div class="relative ml-4">
-                    <span class="material-symbols-outlined absolute left-2 top-1.5 text-slate-400 text-lg">search</span>
-                    <input
-                        class="pl-9 pr-4 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded text-sm w-64 focus:outline-none focus:ring-1 focus:ring-primary"
-                        placeholder="Search documentation" type="text" />
-                </div>
-            </nav>
-        </div>
         <div class="max-w-[1600px] mx-auto px-6 flex gap-8 text-[13px] font-semibold text-slate-600 dark:text-slate-400 pt-3"
             id="main-nav">
             <a class="pb-2 border-b-2 border-transparent hover:text-slate-900 dark:hover:text-white cursor-pointer"
@@ -148,51 +120,6 @@
             </div>
         </main>
     </div>
-    <footer class="border-t border-border-light dark:border-border-dark mt-auto bg-slate-50 dark:bg-slate-900/50">
-        <div
-            class="max-w-[1600px] mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center text-xs text-slate-500">
-            <div class="flex items-center gap-4 mb-4 md:mb-0">
-                <a class="hover:underline" href="#">Legal</a>
-                <a class="hover:underline" href="#">Privacy</a>
-                <a class="hover:underline" href="#">Trust</a>
-                <a class="hover:underline" href="#">Status</a>
-                <span class="ml-4">Updated February 8, 2026</span>
-            </div>
-            <div
-                class="flex items-center gap-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-1.5 rounded cursor-pointer">
-                <img alt="US Flag" class="w-4 h-3 object-cover"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuDImYpn5bGFK53sbJwvi7S1DY495Jxg6CaIQLj0tGl0122PMRxt3felg5KRylfKV_C01BmaHmRg2cfzkZyGQAkfcHcMJPrHB2Ru5HbEQsUBRcQw_l7cc3mzMctweNtxNBmnC4i1Qdm2IMEa2CLeyiagCdC6E1zw8UQGSgV7T9nUqfXatDTRYVxyv5WVSSk-hnE8CPv8U5RGUP7bt1y_BZCeJmqwA6LflAKYHxyQ2q5ni_lmrFS-PEx2f2VIFKRdjl6Xcmr5_ntBI9s" />
-                <span>English</span>
-                <span class="material-symbols-outlined text-sm">expand_more</span>
-            </div>
-        </div>
-        <div class="flex w-full overflow-hidden">
-            <div class="data-bar-segment bg-slate-400"></div>
-            <div class="data-bar-segment bg-slate-300"></div>
-            <div class="data-bar-segment bg-slate-200"></div>
-            <div class="data-bar-segment bg-yellow-400"></div>
-            <div class="data-bar-segment bg-yellow-300"></div>
-            <div class="data-bar-segment bg-yellow-200"></div>
-            <div class="data-bar-segment bg-green-500"></div>
-            <div class="data-bar-segment bg-green-400"></div>
-            <div class="data-bar-segment bg-cyan-400"></div>
-            <div class="data-bar-segment bg-cyan-300"></div>
-            <div class="data-bar-segment bg-blue-600"></div>
-            <div class="data-bar-segment bg-blue-500"></div>
-            <div class="data-bar-segment bg-blue-400"></div>
-            <div class="data-bar-segment bg-indigo-500"></div>
-            <div class="data-bar-segment bg-indigo-400"></div>
-            <div class="data-bar-segment bg-purple-400"></div>
-            <div class="data-bar-segment bg-purple-300"></div>
-            <div class="data-bar-segment bg-teal-400"></div>
-            <div class="data-bar-segment bg-teal-300"></div>
-            <div class="data-bar-segment bg-emerald-400" style="flex: 2;"></div>
-            <div class="data-bar-segment bg-emerald-300" style="flex: 2;"></div>
-        </div>
-        <div class="bg-slate-900 text-white text-[10px] py-2 px-6 flex justify-between items-center">
-            <span> 2026 ML Forge, Inc.</span>
-        </div>
-    </footer>
     <script>
         const pageData = {
             'annotation-studio': {
@@ -532,6 +459,9 @@
             }
         });
     </script>
+    <!-- FOOTER PLACEHOLDER (Injected via components.js) -->
+    <div id="footer-placeholder"></div>
+    <script src="components.js"></script>
 </body>
 
 </html>

@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
@@ -16,7 +14,6 @@ import {
   WorkflowPage,
   LandingPage,
   AgenticPage,
-  UseCasePage,
   PricingPage,
   DocsPage,
   ContactPage,
@@ -40,18 +37,15 @@ export default function App() {
 function AppShell() {
   const location = useLocation();
   const path = location.pathname;
-  const hideNavbar = path.startsWith('/dashboard') || path.startsWith('/admin') || path === '/login' || path === '/signup' || path === '/forgot-password' || path === '/reset-password' || path === '/otp-validation';
-  const hideFooter =
-    path === '/login' ||
-    path === '/signup' ||
-    path === '/forgot-password' ||
-    path === '/reset-password' ||
-    path === '/otp-validation';
+  // Pages that are NOT loaded via iframe (they manage their own scrolling or need root scroll)
+  const isInternalPage = path.startsWith('/dashboard') || path.startsWith('/admin') || path === '/login' || path === '/signup' || path === '/forgot-password' || path === '/reset-password' || path === '/otp-validation';
+
+  // For all other pages (iframes), we want to disable parent scrolling
+  const shouldDisableScroll = !isInternalPage || path === '/';
 
   return (
-    <div className={`app-shell ${hideNavbar ? 'no-scroll' : ''}`}>
-      {!hideNavbar && <Navbar />}
-      <main className="app-main" style={{ paddingTop: hideNavbar ? 0 : 80 }}>
+    <div className={`app-shell ${shouldDisableScroll ? 'no-scroll' : ''}`}>
+      <main className="app-main" style={{ paddingTop: 0 }}>
         <div className="app-content">
           <Routes>
             <Route path="/" element={<LandingPage />} />
@@ -99,7 +93,6 @@ function AppShell() {
           </Routes>
         </div>
       </main>
-      {!hideFooter && <Footer />}
     </div>
   );
 }

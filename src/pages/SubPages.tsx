@@ -10,5 +10,5 @@ export const ContactPage = () => <IframePage src="/contact_page.html" title="Eng
 export const TermsPage = () => <IframePage src="/terms_page.html" title="ML Forge: Terms & Conditions" />;
 export const PrivacyPage = () => <IframePage src="/privacy_page.html" title="ML Forge: Privacy Policy" />;
 export const Guarantees1Page = () => <IframePage src="/guarantees1_page.html" title="ML Forge: Guarantees & Boundaries I" />;
-export const DownloadPage = () => <IframePage src="/download-page.html" title="ML Forge: Download Page" />;
+export const DownloadPage = () => <IframePage src="/download_page.html" title="ML Forge: Download Page" />;
 export const VectorDBPage = () => <IframePage src="/vector_db_page.html" title="ML Forge: Vector Database Documentation" />;

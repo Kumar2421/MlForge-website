@@ -77,11 +77,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 export default function DashboardV2Page({ session, navigate, lockedTab = null }) {
     const SectionCard = React.useCallback(({ title, description, action, children }) => {
         return (
-            <Card>
-                <CardHeader className="flex flex-row items-start justify-between gap-3 space-y-0">
+            <Card className="glass-panel border-white/5 bg-[#080808]/50 backdrop-blur-xl transition-all hover:border-white/10">
+                <CardHeader className="flex flex-row items-start justify-between gap-3 space-y-0 pb-2">
                     <div className="min-w-0">
-                        <CardTitle className="truncate text-sm font-semibold tracking-tight">{title}</CardTitle>
-                        {description ? <CardDescription className="mt-1">{description}</CardDescription> : null}
+                        <CardTitle className="truncate font-bold tracking-tight text-white">{title}</CardTitle>
+                        {description ? <CardDescription className="mt-1 text-xs text-gray-500 font-light">{description}</CardDescription> : null}
                     </div>
                     {action ? <div className="shrink-0">{action}</div> : null}
                 </CardHeader>
@@ -96,15 +96,11 @@ export default function DashboardV2Page({ session, navigate, lockedTab = null })
 
     React.useEffect(() => {
         if (typeof document === "undefined") return
-        const html = document.documentElement
-        const body = document.body
-        const prevHtmlOverflow = html.style.overflow
-        const prevBodyOverflow = body.style.overflow
-        html.style.overflow = "hidden"
-        body.style.overflow = "hidden"
+        document.documentElement.style.overflow = "hidden"
+        document.body.style.overflow = "hidden"
         return () => {
-            html.style.overflow = prevHtmlOverflow
-            body.style.overflow = prevBodyOverflow
+            document.documentElement.style.overflow = ""
+            document.body.style.overflow = ""
         }
     }, [])
 
