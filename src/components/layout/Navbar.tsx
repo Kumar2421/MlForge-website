@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { NAV_LINKS } from '../data/mockData';
+import { NAV_LINKS } from '../../data/mockData';
 import './Navbar.css';
 
 export default function Navbar() {

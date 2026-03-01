@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { Navigate, useLocation } from 'react-router-dom'
-import { supabase } from '../lib/supabaseClient'
+import { supabase } from '../../supabaseClient'
 
 export default function ProtectedRoute({ children }: { children: ReactNode }) {
   const location = useLocation()
@@ -23,7 +23,7 @@ export default function ProtectedRoute({ children }: { children: ReactNode }) {
 
     init()
 
-    const { data: subscription } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: subscription } = supabase.auth.onAuthStateChange((_event: any, session: any) => {
       if (!mounted) return
       setAuthed(!!session)
     })

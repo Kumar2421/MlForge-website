@@ -1,14 +1,17 @@
 import { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
-import LoginPage from './pages/LoginPage';
-import SignupPage from './pages/SignupPage';
-import ForgotPasswordPage from './pages/ForgotPasswordPage';
-import ResetPasswordPage from './pages/ResetPasswordPage';
-import OTPValidationPage from './pages/OTPValidationPage';
-import ProtectedRoute from './components/ProtectedRoute';
+import LoginPage from './pages/auth/LoginPage';
+import SignupPage from './pages/auth/SignupPage';
+import ForgotPasswordPage from './pages/auth/ForgotPasswordPage';
+import ResetPasswordPage from './pages/auth/ResetPasswordPage';
+import OTPValidationPage from './pages/auth/OTPValidationPage';
+import ProtectedRoute from './components/layout/ProtectedRoute';
+// @ts-ignore
 import DashboardV2Page from './DashboardV2Page.jsx';
+// @ts-ignore
 import AdminPage from './AdminPage.jsx';
 import { supabase } from './supabaseClient';
+// @ts-ignore
 import { ToastProvider } from './utils/toast.jsx';
 import {
   WorkflowPage,

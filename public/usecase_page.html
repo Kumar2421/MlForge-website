@@ -63,7 +63,62 @@
         </p>
       </div>
     </div>
-  </section>
+  
+  <div class="mt-16 grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div class="bento-card bg-black border border-white/10 p-6 rounded-xl font-mono text-xs overflow-x-auto text-gray-300">
+      <h4 class="text-white text-sm font-bold mb-4 font-sans">Example Directory Structure</h4>
+      <pre>
+workspace/
+├── data/
+│   ├── raw_images/
+│   └── dataset_v1.0.snapshot/
+├── config.yaml
+├── metrics.json
+└── exports/
+    ├── model_v1_0.onnx
+    └── model_v1_0.trt.engine
+      </pre>
+    </div>
+    <div class="bento-card bg-black border border-white/10 p-6 rounded-xl font-mono text-xs overflow-x-auto text-gray-300">
+      <h4 class="text-white text-sm font-bold mb-4 font-sans">Example config.yaml</h4>
+      <pre>
+# Deterministic build parameters
+dataset:
+  version: "v1.0"
+  seed: 42
+training:
+  engine: "pytorch"
+  epochs: 100
+  batch_size: 16
+  learning_rate: 0.001
+export:
+  targets: ["onnx", "tensorrt8"]
+      </pre>
+    </div>
+    <div class="bento-card bg-black border border-white/10 p-6 rounded-xl font-mono text-xs overflow-x-auto text-gray-300">
+      <h4 class="text-white text-sm font-bold mb-4 font-sans">Sample metrics.json</h4>
+      <pre>
+{
+  "precision": 0.942,
+  "recall": 0.961,
+  "mAP_50": 0.985,
+  "mAP_50_95": 0.723,
+  "inference_latency_ms": 1.42
+}
+      </pre>
+    </div>
+    <div class="bento-card bg-black border border-white/10 p-6 rounded-xl font-mono text-xs overflow-x-auto text-gray-300">
+      <h4 class="text-white text-sm font-bold mb-4 font-sans">CLI Export Example</h4>
+      <pre>
+$ mforge export --model checkpoints/best.pt \
+                --format tensorrt \
+                --fp16 \
+                --output exports/model_v1.trt
+      </pre>
+    </div>
+  </div>
+  
+</section>
   <section class="bg-background-light dark:bg-background-dark py-20 px-4 sm:px-6 lg:px-8">
     <div class="max-w-7xl mx-auto">
       <div class="mb-12">

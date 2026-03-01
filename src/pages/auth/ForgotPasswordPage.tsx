@@ -1,10 +1,13 @@
+import { SEO } from "../../utils/SEO";
 import { GalleryVerticalEnd } from "lucide-react"
-import { ResetPasswordForm } from "../components/reset-password-form"
-import authHeroImage from "../assets/ChatGPT Image Feb 26, 2026, 11_02_03 AM.png"
+import { ForgotPasswordForm } from "../../components/forms/forgot-password-form"
+import authHeroImage from "../../assets/ChatGPT Image Feb 26, 2026, 11_02_03 AM.png"
 
-export default function ResetPasswordPage() {
+export default function ForgotPasswordPage() {
   return (
-    <div className="grid min-h-svh lg:grid-cols-2">
+    <>
+      <SEO title="ForgotPassword" />
+      <div className="grid min-h-svh lg:grid-cols-2">
       <div className="flex flex-col gap-4 p-6 md:p-10">
         <div className="flex justify-center gap-2 md:justify-start">
           <a href="/" className="flex items-center gap-2 font-medium">
@@ -16,7 +19,7 @@ export default function ResetPasswordPage() {
         </div>
         <div className="flex flex-1 items-center justify-center">
           <div className="w-full max-w-xs">
-            <ResetPasswordForm />
+            <ForgotPasswordForm />
           </div>
         </div>
       </div>
@@ -28,6 +31,8 @@ export default function ResetPasswordPage() {
         />
       </div>
     </div>
+      </>
   )
 }
+
 

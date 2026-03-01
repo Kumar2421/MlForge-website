@@ -1,10 +1,13 @@
+import { SEO } from "../../utils/SEO";
 import { GalleryVerticalEnd } from "lucide-react"
-import { OTPValidationForm } from "../components/otp-validation-form"
-import authHeroImage from "../assets/ChatGPT Image Feb 26, 2026, 11_02_03 AM.png"
+import { OTPValidationForm } from "../../components/forms/otp-validation-form"
+import authHeroImage from "../../assets/ChatGPT Image Feb 26, 2026, 11_02_03 AM.png"
 
 export default function OTPValidationPage() {
   return (
-    <div className="grid min-h-svh lg:grid-cols-2">
+    <>
+      <SEO title="OTPValidation" />
+      <div className="grid min-h-svh lg:grid-cols-2">
       <div className="flex flex-col gap-4 p-6 md:p-10">
         <div className="flex justify-center gap-2 md:justify-start">
           <a href="/" className="flex items-center gap-2 font-medium">
@@ -28,5 +31,7 @@ export default function OTPValidationPage() {
         />
       </div>
     </div>
+      </>
   )
 }
+
