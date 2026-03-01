@@ -209,8 +209,8 @@
                 </h1>
 
                 <p class="text-xl md:text-2xl text-gray-400 mb-12 leading-relaxed font-light">
-                    Sovereign AI infrastructure built for engineers. Choose a tier that matches your stage of
-                    development, with zero context switching.
+                    Local AI infrastructure built for engineers. Choose a tier that matches your hardware topology, with
+                    zero context switching.
                 </p>
             </div>
         </section>
@@ -237,7 +237,7 @@
                     </div>
                     <div class="mb-6">
                         <span class="text-4xl font-display font-bold text-white">$0</span>
-                        <span class="text-sm text-gray-500">/ forever</span>
+                        <span class="text-sm text-gray-500">/ single device</span>
                     </div>
                     <p class="text-sm text-gray-500 mb-8 leading-relaxed font-light">
                         Evaluate the core vision pipeline locally. Build and prototype without commitment.
@@ -273,8 +273,8 @@
                         <h3 class="text-2xl font-display font-bold text-white mt-1">Data Pro</h3>
                     </div>
                     <div class="mb-6" id="price-data">
-                        <span class="text-4xl font-display font-bold text-white">₹49</span>
-                        <span class="text-sm text-gray-500">/ month</span>
+                        <span class="text-4xl font-display font-bold text-white">$49</span>
+                        <span class="text-sm text-gray-500">/ workstation / month</span>
                     </div>
                     <p class="text-sm text-gray-500 mb-8 leading-relaxed font-light">
                         Deterministic prep and locking for serious vision projects.
@@ -310,8 +310,8 @@
                         <h3 class="text-2xl font-display font-bold text-white mt-1">Train Pro</h3>
                     </div>
                     <div class="mb-6" id="price-train">
-                        <span class="text-4xl font-display font-bold text-white">₹99</span>
-                        <span class="text-sm text-gray-500">/ month</span>
+                        <span class="text-4xl font-display font-bold text-white">$99</span>
+                        <span class="text-sm text-gray-500">/ workstation / month</span>
                     </div>
                     <p class="text-sm text-gray-500 mb-8 leading-relaxed font-light">
                         Full model training visibility and shared GPU orchestration.
@@ -342,13 +342,13 @@
                 <!-- Deploy Pro -->
                 <div class="glow-border p-8 pricing-card flex flex-col">
                     <div class="mb-6">
-                        <span class="text-[10px] font-mono text-accent-purple uppercase tracking-widest">Enterprise
-                            Ready</span>
-                        <h3 class="text-2xl font-display font-bold text-white mt-1">Deploy Pro</h3>
+                        <span class="text-[10px] font-mono text-accent-purple uppercase tracking-widest">Facility
+                            Level</span>
+                        <h3 class="text-2xl font-display font-bold text-white mt-1">Site License</h3>
                     </div>
                     <div class="mb-6" id="price-deploy">
-                        <span class="text-4xl font-display font-bold text-white">₹199</span>
-                        <span class="text-sm text-gray-500">/ month</span>
+                        <span class="text-4xl font-display font-bold text-white">Custom</span>
+                        <span class="text-sm text-gray-500">/ fixed hardware parameter</span>
                     </div>
                     <p class="text-sm text-gray-500 mb-8 leading-relaxed font-light">
                         Production export, benchmarking, and offline edge deployment.
@@ -372,8 +372,8 @@
                         </li>
                     </ul>
                     <button
-                        class="w-full py-4 text-center border border-white/10 rounded-lg text-[10px] font-bold uppercase tracking-widest hover:bg-white/5 transition-all">Talk
-                        to Sales</button>
+                        class="w-full py-4 text-center border border-white/10 rounded-lg text-[10px] font-bold uppercase tracking-widest hover:bg-white/5 transition-all">Submit
+                        Technical Requirements</button>
                 </div>
             </div>
         </section>
@@ -616,15 +616,16 @@
         <section class="py-32 px-4 reveal">
             <div class="max-w-4xl mx-auto glass-panel p-12 md:p-20 text-center relative overflow-hidden group">
                 <div class="absolute inset-0 grid-pattern opacity-10"></div>
-                <h2 class="text-4xl md:text-5xl font-display font-bold text-white mb-8 tracking-tighter">Ready to forge
-                    intelligence?</h2>
+                <h2 class="text-4xl md:text-5xl font-display font-bold text-white mb-8 tracking-tighter">Ready to
+                    engineer
+                    deterministic AI?</h2>
                 <div class="flex flex-col sm:flex-row gap-4 justify-center relative z-10">
                     <button
                         class="bg-primary hover:bg-primary-hover text-black px-10 py-5 rounded-lg font-bold text-xs uppercase tracking-widest transition-all">Get
-                        Started Free</button>
+                        Local License</button>
                     <button
-                        class="border border-white/10 hover:bg-white/5 text-white px-10 py-5 rounded-lg font-bold text-xs uppercase tracking-widest transition-all">Talk
-                        to Sales</button>
+                        class="border border-white/10 hover:bg-white/5 text-white px-10 py-5 rounded-lg font-bold text-xs uppercase tracking-widest transition-all">Discuss
+                        Technical Integration</button>
                 </div>
             </div>
         </section>
@@ -669,13 +670,13 @@
             const deployP = document.getElementById('price-deploy');
 
             if (tier === 'monthly') {
-                dataP.querySelector('.text-4xl').innerText = '₹49';
-                trainP.querySelector('.text-4xl').innerText = '₹99';
-                deployP.querySelector('.text-4xl').innerText = '₹199';
+                dataP.querySelector('.text-4xl').innerText = '$49';
+                trainP.querySelector('.text-4xl').innerText = '$99';
+                deployP.querySelector('.text-4xl').innerText = 'Custom';
             } else {
-                dataP.querySelector('.text-4xl').innerText = '₹41';
-                trainP.querySelector('.text-4xl').innerText = '₹84';
-                deployP.querySelector('.text-4xl').innerText = '₹169';
+                dataP.querySelector('.text-4xl').innerText = '$490';
+                trainP.querySelector('.text-4xl').innerText = '$990';
+                deployP.querySelector('.text-4xl').innerText = 'Custom';
             }
         }
 
